@@ -3,6 +3,7 @@
 import { useAtom } from 'jotai';
 import { motion, AnimatePresence } from 'motion/react';
 import { Bolt, X, Terminal, SunMoon, Palette, Languages } from 'lucide-react';
+import clsx from 'clsx';
 import { isConfigButtonVisibleAtom, isConfigPanelOpenAtom } from '@/store/ui-store';
 import AppearanceSwitcher from '@/layout/AppearanceSwitcher';
 import PalettesSwitcher from '@/layout/PalettesSwitcher';
@@ -41,9 +42,10 @@ export default function ConfigWidget({ className = '' }: { className?: string })
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsPanelOpen((prev) => !prev)}
-        className={`flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors ${
-          isPanelOpen ? 'bg-bg-1 text-text-2' : 'bg-bg-3 text-text-1'
-        }`}
+        className={clsx(
+          'flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors',
+          isPanelOpen ? 'bg-bg-1 text-text-2' : 'bg-bg-3 text-text-1',
+        )}
       >
         {isPanelOpen ? <X size={24} /> : <Bolt size={24} />}
       </motion.button>
