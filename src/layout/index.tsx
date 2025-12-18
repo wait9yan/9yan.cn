@@ -34,7 +34,7 @@ const linkList = [
     href: 'https://github.com/wait9yan',
   },
   {
-    label: 'Bilibili',
+    label: '哔哩哔哩',
     href: 'https://space.bilibili.com/396767727',
   },
   {
@@ -67,7 +67,6 @@ export default function Layout({ children }: PropsWithChildren) {
         palette={getPalette('grays')}
         shareColor={true}
       /> */}
-
       {/* <div className='pointer-events-none fixed inset-0 -z-1'>
         <DelaunayHero
           className='bg-blue-200'
@@ -82,56 +81,66 @@ export default function Layout({ children }: PropsWithChildren) {
       <SecretTrigger />
       <ConfigWidget className='-z-9999' />
 
-      <div
+      <motion.div
         className={clsx(
-          'bg-primary-1 flex min-h-screen flex-col items-center px-2 sm:px-4 lg:px-8',
+          'bg-primary-1 flex min-h-screen flex-col items-center px-2 transition-colors sm:px-4 lg:px-8',
           isHome && 'justify-center',
         )}
       >
         {/* 导航栏 */}
-        <nav className={clsx('bg-bg-1 mt-2 rounded-2xl px-6 py-4', isHome && 'min-w-sx max-w-md')}>
-          <div className='flex gap-6'>
+        <motion.div className={clsx('bg-bg-1 mt-2 rounded-3xl', isHome && 'w-full max-w-sm')}>
+          <div className='flex gap-2 px-6 py-4'>
             {navList.map((item) => (
               <Link
                 key={item.path}
                 href={item.path}
-                className='text-text-1 font-medium transition-all hover:px-2'
+                className={clsx(
+                  'text-text-1 hover:bg-primary-1 rounded-full px-2 font-medium transition-all',
+                  pathname === item.path && 'bg-primary-1',
+                )}
               >
                 {item.label}
               </Link>
             ))}
           </div>
           {isHome && (
-            <div>
-              <Image
-                src='/images/avatar.png'
-                alt='avatar'
-                width={240}
-                height={240}
-              />
-              <h2>
-                九言<span>@wait9yan</span>
+            <motion.div className='flex flex-col items-center px-6 py-4'>
+              <motion.div
+                whileHover={{ scale: 1.01 }}
+                className='border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 h-32 w-32 overflow-hidden rounded-full border-2 ring-8 ring-offset-2'
+              >
+                <Image
+                  src='/images/avatar.png'
+                  alt='avatar'
+                  width={128}
+                  height={128}
+                />
+              </motion.div>
+              <h2 className='text-text-1 mt-10 text-2xl font-bold'>
+                九言<span className='text-xl'>@wait9yan</span>
               </h2>
-              <p>你好 👋，我是一个前端开发人员（2024 ～ 至今），从事于互联网行业。</p>
-              <div className='flex justify-center gap-2'>
+              <p className='text-text-2 mt-2 text-sm'>
+                你好 👋，我是一个前端开发工程师（2024 ～ 至今）
+              </p>
+              <div className='mt-10 flex justify-center gap-2'>
                 {linkList.map((item) => (
                   <motion.button
                     key={item.href}
                     layout // 开启布局动画，当上方弹窗出现时，位置变化会平滑过渡
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.9 }}
-                    className='bg-bg-3 text-text-1 flex h-9 w-9 items-center justify-center rounded-full shadow-lg transition-colors'
+                    className='bg-bg-3 text-text-1 flex h-9 w-9 items-center justify-center rounded-full'
                   ></motion.button>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
-        </nav>
+        </motion.div>
         {/* 主内容卡片 */}
         {children}
-      </div>
+      </motion.div>
     </AppearanceProvider>
   );
 }
