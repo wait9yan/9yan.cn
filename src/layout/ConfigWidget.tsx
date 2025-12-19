@@ -2,7 +2,7 @@
 
 import { useAtom } from 'jotai';
 import { motion, AnimatePresence } from 'motion/react';
-import { Bolt, X, Terminal, SunMoon, Palette, Languages } from 'lucide-react';
+import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
 import { isConfigButtonVisibleAtom, isConfigPanelOpenAtom } from '@/store/ui-store';
 import AppearanceSwitcher from '@/layout/AppearanceSwitcher';
@@ -14,17 +14,17 @@ export default function ConfigWidget({ className = '' }: { className?: string })
   const configList: { label: string; icon: React.ReactNode; component: React.ReactNode }[] = [
     {
       label: '外观',
-      icon: <SunMoon size={14} />,
+      icon: <Icon icon='lucide:sun-medium' />,
       component: <AppearanceSwitcher />,
     },
     {
       label: '色调',
-      icon: <Palette size={14} />,
+      icon: <Icon icon='lucide:palette' />,
       component: <PalettesSwitcher />,
     },
     {
       label: '语言',
-      icon: <Languages size={14} />,
+      icon: <Icon icon='lucide:languages' />,
       component: <span className='font-mono text-blue-600'>{process.env.APP_VERSION}</span>,
     },
   ];
@@ -39,15 +39,15 @@ export default function ConfigWidget({ className = '' }: { className?: string })
         layout // 开启布局动画，当上方弹窗出现时，位置变化会平滑过渡
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.04 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsPanelOpen((prev) => !prev)}
         className={clsx(
-          'flex h-14 w-14 items-center justify-center rounded-full shadow-lg transition-colors',
-          isPanelOpen ? 'bg-bg-1 text-text-2' : 'bg-bg-3 text-text-1',
+          'flex h-14 w-14 items-center justify-center rounded-full text-2xl shadow-lg transition-colors',
+          isPanelOpen ? 'bg-bg-1 text-text-2' : 'bg-primary-3 text-bg-1',
         )}
       >
-        {isPanelOpen ? <X size={24} /> : <Bolt size={24} />}
+        {isPanelOpen ? <Icon icon='lucide:x' /> : <Icon icon='lucide:settings' />}
       </motion.button>
 
       <AnimatePresence>
@@ -62,7 +62,7 @@ export default function ConfigWidget({ className = '' }: { className?: string })
             {/* 弹窗内容 */}
             <div className='border-bg-3 mb-4 flex items-center justify-between border-b pb-2'>
               <h3 className='text-text-1 flex items-center gap-2 font-bold'>
-                <Terminal size={16} /> 主题配置
+                <Icon icon='lucide:settings-2' /> 主题配置
               </h3>
             </div>
 
@@ -82,7 +82,7 @@ export default function ConfigWidget({ className = '' }: { className?: string })
               <div className='pt-2'>
                 <button
                   onClick={() => console.log('Cleaning local storage...')}
-                  className='w-full rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-200'
+                  className='w-full rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 transition-colors duration-300 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-200'
                 >
                   清除本地缓存
                 </button>

@@ -19,7 +19,7 @@ export default function PalettesSwitcher() {
     <div className='flex gap-1'>
       {palettes.map((t) => (
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.9 }}
           key={t.value}
           onClick={() => setPalette(t.value)}

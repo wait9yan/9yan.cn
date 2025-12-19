@@ -1,12 +1,13 @@
 'use client';
+
 import { motion } from 'motion/react';
-import { SunMedium, Moon, SunMoon } from 'lucide-react';
+import { Icon } from '@iconify-icon/react';
 import { useAppearance, Appearance } from '@/layout/ThemeContext';
 
 const appearances: { value: Appearance; label: string; icon: React.ReactNode }[] = [
-  { value: 'light', label: '浅色', icon: <SunMedium size={14} /> },
-  { value: 'dark', label: '深色', icon: <Moon size={14} /> },
-  { value: 'auto', label: '自动', icon: <SunMoon size={14} /> },
+  { value: 'light', label: '浅色', icon: <Icon icon='lucide:sun-medium' /> },
+  { value: 'dark', label: '深色', icon: <Icon icon='lucide:moon' /> },
+  { value: 'auto', label: '自动', icon: <Icon icon='lucide:sun-moon' /> },
 ];
 
 export default function AppearanceSwitcher() {
@@ -16,7 +17,7 @@ export default function AppearanceSwitcher() {
     <div className='flex gap-2'>
       {appearances.map((t) => (
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.9 }}
           key={t.value}
           onClick={() => setAppearance(t.value)}

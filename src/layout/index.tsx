@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
+import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
 // import BackgroundCanvas from '@/layout/BackgroundCanvas';
 // import DelaunayHero, { PresetDistribution, PresetFillColor } from '@/layout/DelaunayHero';
@@ -17,14 +18,17 @@ const navList = [
   {
     label: '我',
     path: '/',
+    icon: <Icon icon='lucide:user' />,
   },
   {
     label: '文章',
     path: '/blogs',
+    icon: <Icon icon='lucide:book' />,
   },
   {
     label: '项目',
     path: '/projects',
+    icon: <Icon icon='lucide:code' />,
   },
 ];
 
@@ -32,28 +36,34 @@ const linkList = [
   {
     label: 'Github',
     href: 'https://github.com/wait9yan',
+    icon: <Icon icon='lucide:github' />,
   },
   {
     label: '哔哩哔哩',
     href: 'https://space.bilibili.com/396767727',
+    icon: <Icon icon='ri:bilibili-line' />,
   },
   {
     label: 'Email',
     href: 'mailto:wait9yan@gmail.com',
+    icon: <Icon icon='lucide:mail' />,
   },
   {
     label: 'QQ',
     href: 'tencent://message/?uin=1234567890&Site=www.qq.com&Menu=yes',
+    icon: <Icon icon='ri:qq-line' />,
   },
   {
     label: 'Telegram',
     href: 'https://t.me/2yan',
+    icon: <Icon icon='ri:telegram-2-line' />,
   },
 ];
 
 export default function Layout({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const isHome = pathname === '/';
+  const isActive = (path: string) => pathname === path;
   return (
     <AppearanceProvider>
       {/* 背景 */}
@@ -95,18 +105,35 @@ export default function Layout({ children }: PropsWithChildren) {
                 key={item.path}
                 href={item.path}
                 className={clsx(
-                  'text-text-1 hover:bg-primary-1 rounded-full px-2 font-medium transition-all',
-                  pathname === item.path && 'bg-primary-1',
+                  'group text-text-1 text-md hover:bg-primary-1 flex items-center rounded-xl py-0.5 font-medium transition-all duration-300 hover:px-4',
+                  isActive(item.path) && 'bg-primary-1 px-4',
                 )}
               >
-                {item.label}
+                <span
+                  className={clsx(
+                    'flex items-center overflow-hidden transition-all duration-300 ease-in-out',
+                    isActive(item.path)
+                      ? 'mr-1 max-w-6 opacity-100'
+                      : 'mr-0 max-w-0 opacity-0 group-hover:mr-1 group-hover:max-w-6 group-hover:opacity-100',
+                  )}
+                >
+                  {item.icon}
+                </span>
+                <span className='group relative cursor-pointer'>
+                  {item.label}
+                  {/* 下划线元素 */}
+                  <span className='bg-primary-1 absolute bottom-0 left-0 h-1 w-full origin-left scale-y-100 rounded-full transition-all duration-300 group-hover:scale-y-0'></span>
+                </span>
               </Link>
             ))}
           </div>
           {isHome && (
-            <motion.div className='flex flex-col items-center px-6 py-4'>
+            <motion.div
+              layout
+              className='flex flex-col items-center px-6 py-4'
+            >
               <motion.div
-                whileHover={{ scale: 1.01 }}
+                whileHover={{ scale: 1.04 }}
                 className='border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 h-32 w-32 overflow-hidden rounded-full border-2 ring-8 ring-offset-2'
               >
                 <Image
@@ -127,12 +154,12 @@ export default function Layout({ children }: PropsWithChildren) {
                   <motion.button
                     key={item.href}
                     layout // 开启布局动画，当上方弹窗出现时，位置变化会平滑过渡
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    whileHover={{ scale: 1.01 }}
+                    whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.9 }}
-                    className='bg-bg-3 text-text-1 flex h-9 w-9 items-center justify-center rounded-full'
-                  ></motion.button>
+                    className='bg-primary-3 text-bg-1 flex h-9 w-9 items-center justify-center rounded-full'
+                  >
+                    {item.icon}
+                  </motion.button>
                 ))}
               </div>
             </motion.div>
