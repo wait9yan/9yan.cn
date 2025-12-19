@@ -36,7 +36,6 @@ export default function ConfigWidget({ className = '' }: { className?: string })
       className={`fixed top-8 right-2 z-9999 flex flex-col items-end gap-3 sm:right-4 lg:right-8 ${className}`}
     >
       <motion.button
-        layout // 开启布局动画，当上方弹窗出现时，位置变化会平滑过渡
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.04 }}

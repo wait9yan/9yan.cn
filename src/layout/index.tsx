@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
 // import BackgroundCanvas from '@/layout/BackgroundCanvas';
@@ -91,21 +91,30 @@ export default function Layout({ children }: PropsWithChildren) {
       <SecretTrigger />
       <ConfigWidget className='-z-9999' />
 
-      <motion.div
+      <div
         className={clsx(
           'bg-primary-1 flex min-h-screen flex-col items-center px-2 transition-colors sm:px-4 lg:px-8',
-          isHome && 'justify-center',
         )}
       >
         {/* 导航栏 */}
-        <motion.div className={clsx('bg-bg-1 mt-2 rounded-3xl', isHome && 'w-full max-w-sm')}>
-          <div className='flex gap-2 px-6 py-4'>
+        <motion.div
+          layout
+          transition={{
+            layout: {
+              type: 'tween',
+              ease: ['easeIn', 'easeOut'],
+              delay: isHome ? 0 : 0.2,
+            },
+          }}
+          className={clsx('bg-bg-1 mt-2 rounded-3xl', isHome && 'mt-[25vh] w-full max-w-sm')}
+        >
+          <div className='flex justify-center gap-2 px-6 py-4'>
             {navList.map((item) => (
               <Link
                 key={item.path}
                 href={item.path}
                 className={clsx(
-                  'group text-text-1 text-md hover:bg-primary-1 flex items-center rounded-xl py-0.5 font-medium transition-all duration-300 hover:px-4',
+                  'group text-text-2 text-md hover:bg-primary-1 flex items-center rounded-full py-0.5 font-medium transition-all duration-300 hover:px-4',
                   isActive(item.path) && 'bg-primary-1 px-4',
                 )}
               >
@@ -127,47 +136,88 @@ export default function Layout({ children }: PropsWithChildren) {
               </Link>
             ))}
           </div>
-          {isHome && (
-            <motion.div
-              layout
-              className='flex flex-col items-center px-6 py-4'
-            >
+          {/* 首页内容 */}
+          <AnimatePresence>
+            {isHome && (
               <motion.div
-                whileHover={{ scale: 1.04 }}
-                className='border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 h-32 w-32 overflow-hidden rounded-full border-2 ring-8 ring-offset-2'
+                key='home-content'
+                initial={{ height: 0, overflow: 'hidden' }}
+                animate={{
+                  height: 'auto',
+                  transition: {
+                    height: { duration: 0.3 },
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  y: 20,
+                  height: 0,
+                  transition: {
+                    height: { duration: 0.2, delay: 0.1 },
+                    opacity: { duration: 0.2 },
+                    y: { duration: 0.2 },
+                  },
+                }}
+                className='flex flex-col items-center px-6 py-4'
               >
-                <Image
-                  src='/images/avatar.png'
-                  alt='avatar'
-                  width={128}
-                  height={128}
-                />
+                <motion.div
+                  whileHover={{ scale: 1.04 }}
+                  className='border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 h-32 w-32 overflow-hidden rounded-full border-2 ring-8 ring-offset-2'
+                >
+                  <Image
+                    src='/images/avatar.png'
+                    alt='avatar'
+                    width={128}
+                    height={128}
+                  />
+                </motion.div>
+                <h2 className='text-text-1 mt-10 text-2xl font-bold'>
+                  九言<span className='text-xl'>@wait9yan</span>
+                </h2>
+                <p className='text-text-2 mt-2 text-sm'>
+                  你好 👋，我是一个前端开发工程师（2024 ～ 至今）
+                </p>
+                <div className='mt-10 flex justify-center gap-2'>
+                  {linkList.map((item) => (
+                    <motion.button
+                      key={item.href}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.9 }}
+                      className='bg-primary-3 text-bg-1 flex h-9 w-9 items-center justify-center rounded-full'
+                    >
+                      {item.icon}
+                    </motion.button>
+                  ))}
+                </div>
               </motion.div>
-              <h2 className='text-text-1 mt-10 text-2xl font-bold'>
-                九言<span className='text-xl'>@wait9yan</span>
-              </h2>
-              <p className='text-text-2 mt-2 text-sm'>
-                你好 👋，我是一个前端开发工程师（2024 ～ 至今）
-              </p>
-              <div className='mt-10 flex justify-center gap-2'>
-                {linkList.map((item) => (
-                  <motion.button
-                    key={item.href}
-                    layout // 开启布局动画，当上方弹窗出现时，位置变化会平滑过渡
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.9 }}
-                    className='bg-primary-3 text-bg-1 flex h-9 w-9 items-center justify-center rounded-full'
-                  >
-                    {item.icon}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
+            )}
+          </AnimatePresence>
         </motion.div>
         {/* 主内容卡片 */}
-        {children}
-      </motion.div>
+        <AnimatePresence>
+          {!isHome && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: {
+                  delay: 0.5, // 等待导航栏动画完成后再显示
+                  duration: 0.3,
+                },
+              }}
+              exit={{
+                opacity: 0,
+                y: 20,
+                transition: { duration: 0.2 }, // 立即消失
+              }}
+              className='flex w-full flex-col flex-wrap content-center'
+            >
+              {children}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </AppearanceProvider>
   );
 }
