@@ -2,9 +2,8 @@
 
 import { PropsWithChildren } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
 // import BackgroundCanvas from '@/layout/BackgroundCanvas';
@@ -29,34 +28,6 @@ const navList = [
     label: '项目',
     path: '/projects',
     icon: <Icon icon='lucide:code' />,
-  },
-];
-
-const linkList = [
-  {
-    label: 'Github',
-    href: 'https://github.com/wait9yan',
-    icon: <Icon icon='lucide:github' />,
-  },
-  {
-    label: '哔哩哔哩',
-    href: 'https://space.bilibili.com/396767727',
-    icon: <Icon icon='ri:bilibili-line' />,
-  },
-  {
-    label: 'Email',
-    href: 'mailto:wait9yan@gmail.com',
-    icon: <Icon icon='lucide:mail' />,
-  },
-  {
-    label: 'QQ',
-    href: 'tencent://message/?uin=1234567890&Site=www.qq.com&Menu=yes',
-    icon: <Icon icon='ri:qq-line' />,
-  },
-  {
-    label: 'Telegram',
-    href: 'https://t.me/2yan',
-    icon: <Icon icon='ri:telegram-2-line' />,
   },
 ];
 
@@ -112,6 +83,14 @@ export default function Layout({ children }: PropsWithChildren) {
           {/* 导航栏 */}
           <motion.div
             layout
+            initial={{ borderRadius: '24px' }}
+            animate={{
+              borderRadius: isHome ? '24px 24px 0  0' : '24px',
+              transition: {
+                borderRadius: { duration: 0.3, delay: 0.3 },
+              },
+            }}
+            exit={{ borderRadius: '24px' }}
             transition={{
               layout: {
                 type: 'tween',
@@ -120,7 +99,7 @@ export default function Layout({ children }: PropsWithChildren) {
                 duration: 0.3,
               },
             }}
-            className={clsx('bg-bg-1 mt-2 rounded-3xl')}
+            className={clsx('bg-bg-1 mt-2', isHome ? 'w-full rounded-t-3xl' : 'rounded-3xl')}
           >
             <div className='flex justify-center gap-2 px-6 py-4'>
               {navList.map((item) => (
@@ -150,64 +129,9 @@ export default function Layout({ children }: PropsWithChildren) {
                 </Link>
               ))}
             </div>
-            {/* 首页内容 */}
-            <AnimatePresence>
-              {isHome && (
-                <motion.div
-                  key='home-content'
-                  initial={{ opacity: 0, overflow: 'hidden' }}
-                  animate={{
-                    opacity: 1,
-                    transition: {
-                      opacity: { duration: 0.6 },
-                    },
-                  }}
-                  exit={{
-                    height: 0,
-                    padding: 0,
-                    opacity: 0,
-                    transition: {
-                      opacity: { duration: 0.1 },
-                      height: { duration: 0.3 },
-                    },
-                  }}
-                  className='flex flex-col items-center px-6 py-4'
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.04 }}
-                    className='border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 h-32 w-32 overflow-hidden rounded-full border-2 ring-8 ring-offset-2'
-                  >
-                    <Image
-                      src='/images/avatar.png'
-                      alt='avatar'
-                      width={128}
-                      height={128}
-                    />
-                  </motion.div>
-                  <h2 className='text-text-1 mt-10 text-2xl font-bold'>
-                    九言<span className='text-xl'>@wait9yan</span>
-                  </h2>
-                  <p className='text-text-2 mt-2 text-sm'>
-                    Hi 👋，我是一个前端开发工程师（2024 ～ 至今）
-                  </p>
-                  <div className='mt-10 flex justify-center gap-2'>
-                    {linkList.map((item) => (
-                      <motion.button
-                        key={item.href}
-                        whileHover={{ scale: 1.04 }}
-                        whileTap={{ scale: 0.9 }}
-                        className='bg-primary-3 text-bg-1 flex h-9 w-9 items-center justify-center rounded-full'
-                      >
-                        {item.icon}
-                      </motion.button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
-          {/* 主内容卡片 */}
-          {children}
+          {/* 主内容*/}
+          <AnimatePresence mode='wait'>{children}</AnimatePresence>
         </div>
       </div>
     </AppearanceProvider>

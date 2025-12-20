@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 
 export default function Blogs() {
   return (
-    <div className='bg-bg-1 mt-2 w-full overflow-hidden rounded-2xl'>
+    <div className='bg-bg-1 mt-2 w-full overflow-hidden rounded-3xl'>
       <div className='text-text-1 p-8'>
         <h2>
           我的文章<span>@wait9yan</span>
