@@ -5,16 +5,19 @@ import Layout from '@/layout';
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | 久言',
-    default: '久言',
+    template: '%s | 九言',
+    default: '九言',
   },
-  description: '久言不旧，言犹在耳',
+  description: '我想，永远不要停止学习',
   authors: [{ name: '九言', url: 'https://9yan.cn' }],
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='zh-CN'>
+    <html
+      lang='zh-CN'
+      data-theme='gray'
+    >
       <body className='bg-background text-foreground transition-colors duration-300'>
         <Layout>{children}</Layout>
       </body>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useSetAtom } from 'jotai';
-import { isConfigButtonVisibleAtom } from '@/store/ui-store';
+import { isConfigButtonVisibleAtom } from '@/hooks/use-config';
 
 export default function SecretTrigger() {
   const setVisible = useSetAtom(isConfigButtonVisibleAtom);

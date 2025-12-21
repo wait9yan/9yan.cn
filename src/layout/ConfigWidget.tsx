@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 import { motion, AnimatePresence } from 'motion/react';
 import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
-import { isConfigButtonVisibleAtom, isConfigPanelOpenAtom } from '@/store/ui-store';
+import { isConfigButtonVisibleAtom, isConfigPanelOpenAtom } from '@/hooks/use-config';
 import AppearanceSwitcher from '@/layout/AppearanceSwitcher';
 import PalettesSwitcher from '@/layout/PalettesSwitcher';
 

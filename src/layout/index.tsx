@@ -6,9 +6,7 @@ import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'motion/react';
 import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
-// import BackgroundCanvas from '@/layout/BackgroundCanvas';
-// import DelaunayHero, { PresetDistribution, PresetFillColor } from '@/layout/DelaunayHero';
-// import { getPalette } from '@/lib/colorPalettes';
+import DelaunayBackground from '@/layout/DelaunayBackground';
 import SecretTrigger from '@/layout/SecretTrigger';
 import ConfigWidget from '@/layout/ConfigWidget';
 import { AppearanceProvider } from '@/layout/ThemeContext';
@@ -40,25 +38,14 @@ export default function Layout({ children }: PropsWithChildren) {
   return (
     <AppearanceProvider>
       {/* 背景 */}
-      {/* <BackgroundCanvas
-        width={1920}
-        height={1080}
-        cellSize={100}
-        algorithm='delaunay'
-        distributed={true}
-        maxSteps={15}
-        palette={getPalette('grays')}
-        shareColor={true}
-      /> */}
-      {/* <div className='pointer-events-none fixed inset-0 -z-1'>
-        <DelaunayHero
-          className='bg-blue-200'
+      <div className='pointer-events-none fixed inset-0 -z-1'>
+        <DelaunayBackground
           width='100%'
           height='100%'
           animate={false}
           maxPoints={100} // 全屏面积大，可以适当增加点数
         />
-      </div> */}
+      </div>
 
       {/* 配置按钮 */}
       <SecretTrigger />
@@ -66,7 +53,7 @@ export default function Layout({ children }: PropsWithChildren) {
 
       <div
         className={clsx(
-          'bg-primary-1 flex min-h-screen flex-col items-center px-2 transition-colors sm:px-4 lg:px-8',
+          'flex min-h-screen flex-col items-center px-2 transition-colors sm:px-4 lg:px-8',
           isHome && 'justify-center',
           isBlog && 'justify-start',
           isProject && 'justify-start',

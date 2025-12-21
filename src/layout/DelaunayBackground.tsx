@@ -1,37 +1,6 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState, useLayoutEffect } from 'react';
 import Delaunator from 'delaunator';
-
-/**
- * 解析各种格式的颜色字符串 (Hex, RGB, RGBA) 为 {r,g,b} 对象
- */
-const parseColorToRgb = (color: string): { r: number; g: number; b: number } | null => {
-  if (!color) return null;
-
-  // 1. 处理 Hex (#ffffff or #fff)
-  if (color.startsWith('#')) {
-    let hex = color.slice(1);
-    if (hex.length === 3)
-      hex = hex
-        .split('')
-        .map((c) => c + c)
-        .join('');
-    const num = parseInt(hex, 16);
-    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
-  }
-
-  // 2. 处理 RGB/RGBA (浏览器 getComputedStyle 通常返回这个格式)
-  // 例如: "rgb(59, 130, 246)" 或 "rgba(59, 130, 246, 1)"
-  const match = color.match(/\d+/g);
-  if (match && match.length >= 3) {
-    return {
-      r: parseInt(match[0], 10),
-      g: parseInt(match[1], 10),
-      b: parseInt(match[2], 10),
-    };
-  }
-
-  return null;
-};
+import { useAppearance, usePalette } from './ThemeContext';
 
 const parseToRgbStandard = (colorStr: string): { r: number; g: number; b: number } | null => {
   if (typeof window === 'undefined') return null;
@@ -137,11 +106,11 @@ const getCanvasSize = (container: HTMLDivElement) => ({
   height: container.clientHeight,
 });
 
-const DelaunayHero: React.FC<IProps> = ({
-  className = '', // 默认空字符串
+const DelaunayBackground: React.FC<IProps> = ({
+  className = '',
   width = '100%',
   height = '400px',
-  color: propColor, // 别名：propColor (优先级最高)
+  color: propColor,
   lineColor,
   fillColor = PresetFillColor.random,
   borderColor,
@@ -160,33 +129,44 @@ const DelaunayHero: React.FC<IProps> = ({
   const particlesRef = useRef<Particle[]>([]);
   const colorCachingRef = useRef<{ [key: string]: string }>({});
 
-  // 🔥 新增：用于存储最终用于绘图的颜色 (默认为透明或白色，等待提取)
-  const renderColorRef = useRef<string>(propColor || '#ffffff');
+  // 监听主题变化以触发重新渲染
+  const { actualAppearance } = useAppearance();
+  const { palette } = usePalette();
 
-  // --- 1. 颜色提取逻辑 ---
-  useEffect(() => {
-    // 如果用户显式传了 color prop，优先使用 prop
-    console.log('propColor', propColor);
-    if (propColor) {
-      renderColorRef.current = propColor;
-      return;
-    }
+  // 使用 state 强制重绘
+  const [forceUpdate, setForceUpdate] = useState(0);
 
-    // 否则，从 DOM 计算 Tailwind 的 bg-class 颜色
-    if (containerRef.current) {
-      const computedStyle = window.getComputedStyle(containerRef.current);
-      const bgColor = computedStyle.backgroundColor;
+  // 使用 ref 存储最新的颜色值，避免闭包问题
+  const renderColorRef = useRef<string>(
+    propColor ||
+      (typeof window !== 'undefined'
+        ? window.getComputedStyle(document.documentElement).getPropertyValue('--primary-1').trim()
+        : '') ||
+      '#dae1e3', // gray 主题的 primary-1 作为默认值
+  );
 
-      // 浏览器通常返回 "rgb(x, x, x)" 或 "rgba(x, x, x, 0)"
-      // 只有当它是有效颜色且不是完全透明时才使用
-      if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') {
-        renderColorRef.current = bgColor;
-      } else {
-        // Fallback: 如果没有背景色，给个默认橙色避免出错
-        renderColorRef.current = '#fff';
+  // 当主题变化时，在 DOM 更新后读取新颜色
+  useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // 延迟到下一帧，确保 DOM 已更新
+    const updateColor = () => {
+      const newColor =
+        propColor ||
+        window.getComputedStyle(document.documentElement).getPropertyValue('--primary-1').trim() ||
+        '#dae1e3'; // 使用 gray 主题的 primary-1 作为回退值
+
+      if (renderColorRef.current !== newColor) {
+        renderColorRef.current = newColor;
+        colorCachingRef.current = {};
+        setForceUpdate((prev) => prev + 1);
       }
-    }
-  }, [propColor, className]); // 当 className 改变时重新计算
+    };
+
+    // 使用 requestAnimationFrame 确保在浏览器重绘前更新
+    const rafId = requestAnimationFrame(updateColor);
+    return () => cancelAnimationFrame(rafId);
+  }, [propColor, actualAppearance, palette]);
 
   // --- 2. 粒子与绘图逻辑 (基本不变，除了使用 renderColorRef.current) ---
 
@@ -279,7 +259,7 @@ const DelaunayHero: React.FC<IProps> = ({
     if (!ctx) return;
 
     const { width: w, height: h } = getCanvasSize(containerRef.current);
-    const activeColor = renderColorRef.current; // 🔥 获取当前计算出的颜色
+    const activeColor = renderColorRef.current; // 从 ref 读取最新颜色
 
     if (canvas.width !== w || canvas.height !== h) {
       canvas.width = w;
@@ -404,7 +384,9 @@ const DelaunayHero: React.FC<IProps> = ({
         ctx.strokeStyle = 'black';
       }
     }
-  }, [debug, fillColor, lineColor, lineWidth]); // 注意：移除了 color 和 animate 依赖，因为 color 现在通过 ref 读取
+    // forceUpdate 用于颜色变化时强制重建 renderFrame
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debug, fillColor, lineColor, lineWidth, forceUpdate]);
 
   // --- Effects ---
   useEffect(() => {
@@ -428,13 +410,14 @@ const DelaunayHero: React.FC<IProps> = ({
   return (
     <div
       ref={containerRef}
-      className={className} // Tailwind 类名应用在这里 (例如 bg-blue-500)
+      className={className}
       style={{
         position: 'relative',
         width,
         height,
         border: borderColor ? `1px solid ${borderColor}` : undefined,
         overflow: 'hidden',
+        backgroundColor: propColor || 'var(--primary-1)',
       }}
     >
       <canvas
@@ -456,4 +439,4 @@ const DelaunayHero: React.FC<IProps> = ({
   );
 };
 
-export default DelaunayHero;
+export default DelaunayBackground;
