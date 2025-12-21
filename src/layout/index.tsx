@@ -32,8 +32,8 @@ const navList = [
 export default function Layout({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const isBlog = pathname === '/blogs';
-  const isProject = pathname === '/projects';
+  const isBlog = pathname.startsWith('/blogs');
+  const isProject = pathname.startsWith('/projects');
   const isActive = (path: string) => pathname === path;
   return (
     <AppearanceProvider>
@@ -65,6 +65,7 @@ export default function Layout({ children }: PropsWithChildren) {
             isHome && 'w-full max-w-sm',
             isBlog && 'max-w-4xl',
             isProject && 'max-w-7xl',
+            !isHome && !isBlog && !isProject && 'max-w-4xl',
           )}
         >
           {/* 导航栏 */}
