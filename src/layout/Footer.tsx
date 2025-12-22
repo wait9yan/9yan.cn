@@ -88,7 +88,7 @@ export default function Footer({ className }: { className?: string }) {
             transition={{ duration: 0.3 }}
             className={`text-text-2 fixed bottom-4 left-1/2 -translate-x-1/2 cursor-pointer rounded-full px-6 py-2 text-sm backdrop-blur-sm transition-transform ${className}`}
           >
-            © 2025 wait9yan v{process.env.APP_VERSION}
+            <span className='select-none'>© 2025 wait9yan v{process.env.APP_VERSION}</span>
           </motion.footer>
         )}
       </AnimatePresence>
@@ -105,7 +105,7 @@ export default function Footer({ className }: { className?: string }) {
             transition={{ duration: 0.3 }}
             className={`bg-bg-1 text-text-2 fixed right-4 bottom-4 z-50 cursor-pointer rounded-full px-4 py-2 text-sm shadow-lg backdrop-blur-sm transition-transform ${className}`}
           >
-            © wait9yan {process.env.APP_VERSION}
+            <span className='select-none'>© wait9yan {process.env.APP_VERSION}</span>
           </motion.div>
         )}
       </AnimatePresence>

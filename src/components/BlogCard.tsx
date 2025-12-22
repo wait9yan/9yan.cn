@@ -31,7 +31,7 @@ export function BlogCard({ blog }: BlogCardProps) {
                   {categories.map((cat) => (
                     <span
                       key={cat}
-                      className='rounded-full bg-blue-500/10 px-2 py-1'
+                      className='bg-primary-1/50 hover:bg-primary-1 rounded-full px-2 py-1'
                     >
                       {cat}
                     </span>

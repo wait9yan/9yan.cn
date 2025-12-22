@@ -93,7 +93,7 @@ export function BlogPreview({
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className='text-text-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium transition-colors hover:bg-blue-500/20'
+                        className='text-text-2 bg-primary-1/50 hover:bg-primary-1 rounded-full px-3 py-1 text-xs font-medium transition-colors'
                       >
                         {tag}
                       </span>
