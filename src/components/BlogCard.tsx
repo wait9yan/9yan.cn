@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'motion/react';
-import type { BlogListItem } from '@/utils/load-blog';
+import type { BlogListItem } from '@/lib/blog';
 
 type BlogCardProps = {
   blog: BlogListItem;

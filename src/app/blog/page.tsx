@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { getBlogList } from '@/utils/load-blog-server';
+import { getBlogList } from '@/lib/blog';
 import { BlogCard } from '@/components/BlogCard';
 
 export const metadata: Metadata = {

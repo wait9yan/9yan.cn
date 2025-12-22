@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'motion/react';
-import Image from 'next/image';
 import { useMarkdownRender } from '@/hooks/use-markdown-render';
 
 type BlogPreviewProps = {
@@ -14,15 +13,7 @@ type BlogPreviewProps = {
   slug?: string;
 };
 
-export function BlogPreview({
-  markdown,
-  title,
-  tags,
-  date,
-  summary,
-  cover,
-  slug,
-}: BlogPreviewProps) {
+export function BlogPreview({ markdown, title, tags, date, slug }: BlogPreviewProps) {
   const basePath = slug ? `/blogs/${slug}` : undefined;
   const { content, toc, loading } = useMarkdownRender(markdown, basePath);
 
@@ -48,24 +39,6 @@ export function BlogPreview({
         transition={{ duration: 0.5 }}
         className='bg-bg-1 overflow-hidden rounded-2xl shadow-lg'
       >
-        {cover && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className='relative aspect-21/9 w-full overflow-hidden'
-          >
-            <Image
-              src={cover}
-              alt={title}
-              fill
-              priority
-              className='object-cover'
-            />
-            <div className='absolute inset-0 bg-linear-to-b from-transparent to-black/20' />
-          </motion.div>
-        )}
-
         <div className='p-6 sm:p-8 lg:p-10'>
           <motion.header
             initial={{ opacity: 0, y: 10 }}
@@ -76,12 +49,6 @@ export function BlogPreview({
             <h1 className='text-text-1 text-center text-3xl leading-tight font-bold max-sm:text-2xl'>
               {title}
             </h1>
-
-            {summary && (
-              <p className='text-text-2 mx-auto mt-4 max-w-2xl text-center text-base italic'>
-                {summary}
-              </p>
-            )}
 
             <div className='mt-6 flex flex-wrap items-center justify-center gap-4'>
               <time className='text-text-2 text-sm'>{date}</time>
