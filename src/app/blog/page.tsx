@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 
 export default async function Blogs() {
   const blogs = await getBlogList();
-  console.log('blogs', blogs);
   return (
     <div className='bg-bg-1 mt-2 w-full overflow-hidden rounded-3xl'>
       <div className='text-text-1 p-6 lg:p-8'>

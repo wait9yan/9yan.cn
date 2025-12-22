@@ -7,8 +7,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Icon } from '@iconify-icon/react';
 import clsx from 'clsx';
 import DelaunayBackground from '@/layout/DelaunayBackground';
-import SecretTrigger from '@/layout/SecretTrigger';
 import ConfigWidget from '@/layout/ConfigWidget';
+import Footer from '@/layout/Footer';
 import { AppearanceProvider } from '@/layout/ThemeContext';
 
 const navList = [
@@ -48,7 +48,6 @@ export default function Layout({ children }: PropsWithChildren) {
       </div>
 
       {/* 配置按钮 */}
-      <SecretTrigger />
       <ConfigWidget className='-z-9999' />
 
       <div
@@ -61,7 +60,7 @@ export default function Layout({ children }: PropsWithChildren) {
       >
         <div
           className={clsx(
-            'flex w-full flex-col items-start',
+            'flex w-full flex-col items-start pb-16',
             isHome && 'w-full max-w-sm',
             isBlog && 'max-w-4xl',
             isProject && 'max-w-7xl',
@@ -120,6 +119,9 @@ export default function Layout({ children }: PropsWithChildren) {
           </motion.div>
           {/* 主内容*/}
           <AnimatePresence mode='wait'>{children}</AnimatePresence>
+
+          {/* Footer */}
+          <Footer className='' />
         </div>
       </div>
     </AppearanceProvider>

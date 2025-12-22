@@ -71,7 +71,7 @@ export function BlogPreview({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className='border-b-text-3/10 border-b pb-8'
+            className='border-b-bg-3 border-b pb-8'
           >
             <h1 className='text-text-1 text-center text-3xl leading-tight font-bold max-sm:text-2xl'>
               {title}
