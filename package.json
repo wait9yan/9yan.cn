@@ -12,6 +12,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "delaunator": "^5.0.1",
+    "html-react-parser": "^5.2.11",
     "jotai": "^2.16.0",
     "marked": "^17.0.1",
     "motion": "^12.23.26",
