@@ -19,7 +19,7 @@ const navList = [
   },
   {
     label: '文章',
-    path: '/blogs',
+    path: '/blog',
     icon: <Icon icon='lucide:book' />,
   },
   {
@@ -32,7 +32,7 @@ const navList = [
 export default function Layout({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const isBlog = pathname.startsWith('/blogs');
+  const isBlog = pathname.startsWith('/blog');
   const isProject = pathname.startsWith('/projects');
   const isActive = (path: string) => pathname === path;
   return (
