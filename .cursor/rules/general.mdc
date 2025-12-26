@@ -1,6 +1,5 @@
 ---
 description: 本项目规则
-globs:
 alwaysApply: true
 ---
 

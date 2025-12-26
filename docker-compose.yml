@@ -1,0 +1,7 @@
+services:
+  9yan.cn:
+    image: 9yan.cn:latest
+    container_name: 9yan.cn
+    restart: unless-stopped
+    ports:
+      - '3000:3000'

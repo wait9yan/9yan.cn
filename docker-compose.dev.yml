@@ -1,0 +1,9 @@
+services:
+  9yan.cn:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: 9yan.cn
+    restart: unless-stopped
+    ports:
+      - '3000:3000'

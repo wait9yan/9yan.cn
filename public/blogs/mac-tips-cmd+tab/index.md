@@ -2,7 +2,7 @@
 title: Mac使用笔记：解决Command+Tab痛点——单手复活关闭应用技巧
 date: 2025-12-22
 categories:
-  - 文章
+  - 技术
   - 笔记
   - Mac
 ---
