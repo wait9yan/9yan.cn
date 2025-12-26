@@ -42,12 +42,6 @@
     pnpm dev
     ```
 
-4.  **测试docker**
-
-    ```bash
-    docker compose -f docker-compose.dev.yml up --build
-    ```
-
 ### 可用脚本
 
 | 命令          | 描述           |
@@ -57,6 +51,44 @@
 | `pnpm start`  | 启动生产服务器 |
 | `pnpm format` | 格式化代码     |
 | `pnpm lint`   | 检查代码风格   |
+
+## 部署
+
+本项目使用 **PM2 + GitHub Actions** 自动部署。
+
+### 环境要求
+
+- Node.js >= 20
+
+### 快速部署
+
+1. **配置 GitHub Secrets**（仓库设置）
+   - `SSH_HOST`: 服务器 IP
+   - `SSH_USERNAME`: SSH 用户名
+   - `SSH_PRIVATE_KEY`: SSH 私钥
+   - `SSH_PORT`: SSH 端口（默认 22）
+   - `DEPLOY_PATH`: 部署路径（如 `/var/www/9yan.cn`）
+
+2. **推送代码自动部署**
+
+   ```bash
+   git push origin main
+   ```
+
+3. **查看部署状态**
+   - GitHub Actions 自动构建和部署
+
+### 可用脚本
+
+| 命令               | 描述     |
+| :----------------- | :------- |
+| `pnpm pm2:start`   | 启动应用 |
+| `pnpm pm2:restart` | 重启应用 |
+| `pnpm pm2:reload`  | 平滑重启 |
+| `pnpm pm2:stop`    | 停止应用 |
+| `pnpm pm2:logs`    | 查看日志 |
+| `pnpm pm2:monit`   | 实时监控 |
+| `pnpm pm2:status`  | 查看状态 |
 
 ## 📄 许可证
 

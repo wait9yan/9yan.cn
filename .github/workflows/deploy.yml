@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -13,31 +14,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
 
-      - name: Build Docker image
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Prepare deployment package
         run: |
-          docker buildx build \
-            --platform linux/amd64 \
-            -t 9yan.cn:latest \
-            --load \
-            .
+          mkdir -p deploy_package
+          cp -r .next/standalone/* deploy_package/
+          cp -r .next/static deploy_package/.next/
+          cp -r public deploy_package/
+          cp ecosystem.config.js deploy_package/
+          cp scripts/server-deploy.sh deploy_package/
 
-      - name: Save Docker image
-        run: docker save 9yan.cn:latest | gzip > 9yan.cn.tar.gz
-
-      - name: Copy files to server
+      - name: Deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
-          source: '9yan.cn.tar.gz,docker-compose.yml'
+          source: 'deploy_package/*'
           target: ${{ secrets.DEPLOY_PATH }}
+          strip_components: 1
+          rm: false
 
-      - name: Deploy with Docker Compose
+      - name: Initialize and start application
         uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -46,8 +61,22 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            docker load < 9yan.cn.tar.gz
-            rm 9yan.cn.tar.gz
-            docker compose down
-            docker compose up -d
-            docker image prune -f
+            chmod +x server-deploy.sh
+            ./server-deploy.sh
+
+      - name: Health check
+        uses: appleboy/ssh-action@v1.2.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            sleep 3
+            if pm2 describe 9yan.cn > /dev/null 2>&1; then
+              echo "✅ Application is running"
+              pm2 list
+            else
+              echo "❌ Application failed to start"
+              exit 1
+            fi
