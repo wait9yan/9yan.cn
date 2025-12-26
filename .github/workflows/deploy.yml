@@ -31,7 +31,7 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      - name: Prepare deployment package
+      - name: Package deployment files
         run: |
           mkdir -p deploy_package
           cp -r .next/standalone/* deploy_package/
@@ -40,19 +40,26 @@ jobs:
           cp ecosystem.config.js deploy_package/
           cp scripts/server-deploy.sh deploy_package/
 
-      - name: Deploy to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          source: 'deploy_package/*'
-          target: ${{ secrets.DEPLOY_PATH }}
-          strip_components: 1
-          rm: false
+          # 打包为 tar.gz
+          tar -czf deploy-${{ github.sha }}.tar.gz -C deploy_package .
 
-      - name: Initialize and start application
+          # 创建 latest 链接（方便服务器下载）
+          cp deploy-${{ github.sha }}.tar.gz deploy-latest.tar.gz
+
+          echo "Package size: $(du -h deploy-latest.tar.gz | cut -f1)"
+
+      - name: Upload to Tencent COS
+        uses: TencentCloud/cos-action@v1
+        with:
+          secret_id: ${{ secrets.COS_SECRET_ID }}
+          secret_key: ${{ secrets.COS_SECRET_KEY }}
+          cos_bucket: ${{ secrets.COS_BUCKET }}
+          cos_region: ${{ secrets.COS_REGION }}
+          local_path: deploy-latest.tar.gz
+          remote_path: /builds/9yan-cn/
+          clean: false
+
+      - name: Deploy to server
         uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -61,6 +68,16 @@ jobs:
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
+
+            # 从 COS 下载（使用内网域名更快）
+            wget -O deploy.tar.gz \
+              "https://${{ secrets.COS_BUCKET }}.cos.${{ secrets.COS_REGION }}.myqcloud.com/builds/9yan-cn/deploy-latest.tar.gz"
+
+            # 解压
+            tar -xzf deploy.tar.gz
+            rm deploy.tar.gz
+
+            # 执行部署
             chmod +x server-deploy.sh
             ./server-deploy.sh
 
