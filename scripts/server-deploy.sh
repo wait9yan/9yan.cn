@@ -13,7 +13,6 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-# 检查 Node.js
 check_node() {
     if ! command -v node &> /dev/null; then
         echo -e "${RED}❌ Node.js 未安装${NC}"
@@ -22,15 +21,14 @@ check_node() {
     fi
     
     NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
-    if [ "$NODE_VERSION" -lt 18 ]; then
-        echo -e "${RED}❌ Node.js 版本过低 (需要 18+)${NC}"
+    if [ "$NODE_VERSION" -lt 20 ]; then
+        echo -e "${RED}❌ Node.js 版本过低 (需要 20+)${NC}"
         exit 1
     fi
     
     echo -e "${GREEN}✅ Node.js $(node -v)${NC}"
 }
 
-# 检查并安装 PM2
 check_and_install_pm2() {
     if ! command -v pm2 &> /dev/null; then
         echo -e "${YELLOW}📦 PM2 未安装，正在安装...${NC}"
@@ -47,26 +45,12 @@ check_and_install_pm2() {
     fi
 }
 
-# 配置 PM2 自动启动
-setup_pm2_startup() {
-    if ! pm2 startup | grep -q "already configured"; then
-        echo -e "${YELLOW}⚙️  配置 PM2 开机自启...${NC}"
-        pm2 startup | grep "sudo" | bash || true
-    fi
-}
-
-# 创建必要目录
 create_directories() {
-    echo -e "${YELLOW}📁 创建目录结构...${NC}"
     mkdir -p logs
     echo -e "${GREEN}✅ 目录创建完成${NC}"
 }
 
-# 启动或重启应用
 start_application() {
-    echo -e "${YELLOW}🔄 启动应用...${NC}"
-    
-    # 检查应用是否已经在运行
     if pm2 describe 9yan.cn > /dev/null 2>&1; then
         echo "应用正在运行，执行重启..."
         pm2 restart ecosystem.config.js --update-env
@@ -75,16 +59,12 @@ start_application() {
         pm2 start ecosystem.config.js
     fi
     
-    # 保存进程列表
     pm2 save
     
     echo -e "${GREEN}✅ PM2 命令执行成功${NC}"
 }
 
-# 健康检查
 health_check() {
-    echo -e "${YELLOW}🏥 健康检查...${NC}"
-    
     local max_attempts=10
     local attempt=1
     
@@ -107,43 +87,28 @@ health_check() {
 # 清理旧日志
 cleanup_logs() {
     if [ -d "logs" ] && [ "$(du -s logs | cut -f1)" -gt 102400 ]; then
-        echo -e "${YELLOW}🧹 清理旧日志文件...${NC}"
         find logs -name "*.log" -mtime +7 -delete
     fi
 }
 
 # 主流程
 main() {
-    echo "========================================"
-    echo "       9yan.cn 部署脚本 v1.0"
-    echo "========================================"
-    echo ""
-    
-    # 环境检查
-    echo "📋 检查环境..."
+    echo -e "${YELLOW}📋 检查环境...${NC}"
     check_node
     check_and_install_pm2
     
-    # 配置 PM2
-    setup_pm2_startup
-    
-    # 创建目录
+    echo -e "${YELLOW}📁 创建目录结构...${NC}"
     create_directories
     
-    # 清理旧日志
+    echo -e "${YELLOW}🧹 清理旧日志文件...${NC}"
     cleanup_logs
     
-    # 启动应用
+    echo -e "${YELLOW}🔄 启动应用...${NC}"
     start_application
     
-    # 健康检查
+    echo -e "${YELLOW}🏥 健康检查...${NC}"
     health_check
     
-    echo ""
-    echo "========================================"
-    echo -e "${GREEN}✨ 部署完成！${NC}"
-    echo "========================================"
-    echo ""
     echo "📊 应用状态："
     pm2 list
     echo ""
@@ -152,6 +117,5 @@ main() {
     echo "🔄 重启应用: pm2 restart 9yan.cn"
 }
 
-# 执行主流程
 main
 
