@@ -64,6 +64,7 @@ jobs:
           command_timeout: 10m
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
+            find . -mindepth 1 -maxdepth 1 ! -name 'deploy.tar.gz' ! -name 'logs' -exec rm -rf {} +
             tar -xzf deploy.tar.gz
             rm deploy.tar.gz
             chmod +x server-deploy.sh
