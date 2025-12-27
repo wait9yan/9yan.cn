@@ -15,6 +15,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch blog content
+        run: |
+          git fetch origin public/blogs:public/blogs
+          mkdir -p public/blogs
+          git --work-tree=public/blogs checkout public/blogs -- .
+          echo "✅ 博客内容已拉取"
 
       - uses: pnpm/action-setup@v2
         with:

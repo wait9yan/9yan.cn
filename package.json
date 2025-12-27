@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/sync-blogs.js && next dev",
+    "build": "node scripts/sync-blogs.js && next build",
     "start": "next start",
+    "blog:sync": "node scripts/sync-blogs.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint",
