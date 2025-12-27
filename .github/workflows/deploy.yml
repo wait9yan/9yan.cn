@@ -6,46 +6,40 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  NODE_VERSION: '20'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2
         with:
           version: latest
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build application
-        run: pnpm build
-
-      - name: Package deployment files
+      - name: Build
         run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: Package
+        run: |
+          cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
+          cp ecosystem.config.js scripts/server-deploy.sh .next/standalone/
           mkdir -p deploy_package
           cp -r .next/standalone/. deploy_package/
-          cp -r .next/static deploy_package/.next/static
-          rm -rf deploy_package/public
-          cp -r public deploy_package/public
-          cp ecosystem.config.js deploy_package/
-          cp scripts/server-deploy.sh deploy_package/
-
           tar -czf deploy.tar.gz -C deploy_package .
+          echo "📦 Package size: $(du -h deploy.tar.gz | cut -f1)"
 
-          echo "Package size: $(du -h deploy.tar.gz | cut -f1)"
-
-      - name: Upload to server
+      - name: Upload
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -55,7 +49,7 @@ jobs:
           source: 'deploy.tar.gz'
           target: ${{ secrets.DEPLOY_PATH }}
 
-      - name: Deploy to server
+      - name: Deploy
         uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -66,24 +60,18 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             find . -mindepth 1 -maxdepth 1 ! -name 'deploy.tar.gz' ! -name 'logs' -exec rm -rf {} +
-            tar -xzf deploy.tar.gz
-            rm deploy.tar.gz
-            chmod +x server-deploy.sh
-            ./server-deploy.sh
+            tar -xzf deploy.tar.gz && rm deploy.tar.gz
+            chmod +x server-deploy.sh && ./server-deploy.sh
 
-      - name: Health check
-        uses: appleboy/ssh-action@v1.2.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          script: |
-            sleep 3
-            if pm2 describe 9yan.cn > /dev/null 2>&1; then
-              echo "✅ Application is running"
-              pm2 list
-            else
-              echo "❌ Application failed to start"
-              exit 1
-            fi
+            # Health check
+            for i in {1..10}; do
+              if pm2 describe 9yan.cn 2>/dev/null | grep -q "online"; then
+                echo "✅ Application is running"
+                pm2 list
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "❌ Application failed to start"
+            pm2 logs 9yan.cn --lines 20
+            exit 1
