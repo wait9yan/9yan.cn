@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - public/blogs
   workflow_dispatch:
 
 env:
@@ -20,10 +21,12 @@ jobs:
 
       - name: Fetch blog content
         run: |
-          git fetch origin public/blogs:public/blogs
+          git fetch origin public/blogs
           mkdir -p public/blogs
-          git --work-tree=public/blogs checkout public/blogs -- .
-          echo "✅ 博客内容已拉取"
+          git archive origin/public/blogs | tar -x -C public/blogs
+          find public/blogs -name '.*' -type f -delete
+          find public/blogs -name '.gitignore' -delete
+          echo "✅ 文章内容已拉取"
 
       - uses: pnpm/action-setup@v2
         with:

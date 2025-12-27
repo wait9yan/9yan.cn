@@ -36,7 +36,7 @@ function exec(command, options = {}) {
 }
 
 function main() {
-  log('📥 同步博客内容...', 'cyan');
+  log('📥 同步文章内容...', 'cyan');
 
   // 获取远程仓库 URL
   let remoteUrl;
@@ -56,11 +56,11 @@ function main() {
   // 检查目录是否已存在且是 git 仓库
   const gitDir = path.join(BLOG_DIR, '.git');
   if (fs.existsSync(gitDir)) {
-    log('🔄 更新现有博客内容...', 'yellow');
+    log('🔄 更新现有文章内容...', 'yellow');
     process.chdir(BLOG_DIR);
     exec(`git fetch origin ${BLOG_BRANCH}`);
     exec(`git reset --hard origin/${BLOG_BRANCH}`);
-    log('✅ 博客内容已更新', 'green');
+    log('✅ 文章内容已更新', 'green');
     process.exit(0);
   }
 
@@ -71,7 +71,7 @@ function main() {
   }
 
   // 克隆 public/blogs 分支
-  log('📦 克隆博客内容分支...', 'yellow');
+  log('📦 克隆文章内容分支...', 'yellow');
   const publicDir = path.join(process.cwd(), 'public');
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
@@ -79,7 +79,7 @@ function main() {
 
   try {
     exec(`git clone --depth=1 --single-branch --branch ${BLOG_BRANCH} ${remoteUrl} ${BLOG_DIR}`);
-    log('✅ 博客内容同步完成', 'green');
+    log('✅ 文章内容同步完成', 'green');
   } catch {
     log('❌ 克隆失败', 'red');
     process.exit(1);

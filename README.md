@@ -1,6 +1,6 @@
 # 9yan.cn
 
-我的个人博客，使用 Next.js、TypeScript 和 TailwindCSS 构建。
+我的个人网站，使用 Next.js、TypeScript 和 TailwindCSS 构建。
 
 ## TODO
 
@@ -49,7 +49,7 @@
 | ​`​pnpm dev`​       | 启动开发服务器 |
 | ​`​pnpm build`​     | 构建生产版本   |
 | ​`​pnpm start`​     | 启动生产服务器 |
-| ​`​pnpm blog:sync`​ | 同步博客内容   |
+| ​`​pnpm blog:sync`​ | 同步文章内容   |
 | ​`​pnpm format`​    | 格式化代码     |
 | ​`​pnpm lint`​      | 检查代码风格   |
 
