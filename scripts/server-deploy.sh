@@ -59,7 +59,6 @@ setup_pm2_startup() {
 create_directories() {
     echo -e "${YELLOW}📁 创建目录结构...${NC}"
     mkdir -p logs
-    mkdir -p .next/static
     echo -e "${GREEN}✅ 目录创建完成${NC}"
 }
 
@@ -79,7 +78,30 @@ start_application() {
     # 保存进程列表
     pm2 save
     
-    echo -e "${GREEN}✅ 应用启动成功${NC}"
+    echo -e "${GREEN}✅ PM2 命令执行成功${NC}"
+}
+
+# 健康检查
+health_check() {
+    echo -e "${YELLOW}🏥 健康检查...${NC}"
+    
+    local max_attempts=10
+    local attempt=1
+    
+    while [ $attempt -le $max_attempts ]; do
+        if pm2 describe 9yan.cn 2>/dev/null | grep -q "online"; then
+            echo -e "${GREEN}✅ 应用运行正常 (耗时: ${attempt}x2秒)${NC}"
+            return 0
+        fi
+        
+        echo "尝试 $attempt/$max_attempts..."
+        sleep 2
+        attempt=$((attempt + 1))
+    done
+    
+    echo -e "${RED}❌ 应用启动失败，请检查日志${NC}"
+    pm2 logs 9yan.cn --lines 20 --nostream
+    exit 1
 }
 
 # 清理旧日志
@@ -113,6 +135,9 @@ main() {
     
     # 启动应用
     start_application
+    
+    # 健康检查
+    health_check
     
     echo ""
     echo "========================================"
