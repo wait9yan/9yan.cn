@@ -33,10 +33,10 @@ jobs:
 
       - name: Package deployment files
         run: |
-          mkdir -p deploy_package
+          mkdir -p deploy_package/.next
           cp -r .next/standalone/* deploy_package/
-          cp -r .next/static deploy_package/.next/
-          cp -r public deploy_package/
+          cp -r .next/static deploy_package/.next/static
+          cp -r public deploy_package/public
           cp ecosystem.config.js deploy_package/
           cp scripts/server-deploy.sh deploy_package/
 
