@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 加载用户环境配置
+[ -f "$HOME/.profile" ] && source "$HOME/.profile"
+
 set -e
 
 echo "🚀 开始部署 9yan.cn..."
