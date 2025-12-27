@@ -61,12 +61,11 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
+          command_timeout: 10m
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-
             tar -xzf deploy.tar.gz
             rm deploy.tar.gz
-
             chmod +x server-deploy.sh
             ./server-deploy.sh
 

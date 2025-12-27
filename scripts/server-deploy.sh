@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# 服务器端部署脚本
-# 自动检查环境、初始化并启动应用
-
-# 尝试加载用户环境配置
-[ -f "$HOME/.bashrc" ] && source "$HOME/.bashrc" 2>/dev/null || true
-[ -f "$HOME/.profile" ] && source "$HOME/.profile" 2>/dev/null || true
-[ -f "$HOME/.bash_profile" ] && source "$HOME/.bash_profile" 2>/dev/null || true
-
 set -e
 
 echo "🚀 开始部署 9yan.cn..."
