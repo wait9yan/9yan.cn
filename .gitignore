@@ -38,3 +38,6 @@ next-env.d.ts
 # pm2 logs
 logs/
 *.log
+
+# public
+/public/blogs
