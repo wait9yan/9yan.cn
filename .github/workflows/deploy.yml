@@ -24,8 +24,7 @@ jobs:
           git fetch origin public/blogs
           mkdir -p public/blogs
           git archive origin/public/blogs | tar -x -C public/blogs
-          find public/blogs -name '.*' -delete
-          find public/blogs -name '.git*' -delete
+          rm -rf public/blogs/.* public/blogs/.git*
           echo "✅ 文章内容已拉取"
 
       - uses: pnpm/action-setup@v2
