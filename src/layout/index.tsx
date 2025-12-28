@@ -43,12 +43,12 @@ export default function Layout({ children }: PropsWithChildren) {
           width='100%'
           height='100%'
           animate={false}
-          maxPoints={100} // 全屏面积大，可以适当增加点数
+          maxPoints={100}
         />
       </div>
 
       {/* 配置按钮 */}
-      <ConfigWidget className='-z-9999' />
+      <ConfigWidget className='z-2' />
 
       <div
         className={clsx(
@@ -119,10 +119,9 @@ export default function Layout({ children }: PropsWithChildren) {
           </motion.div>
           {/* 主内容*/}
           <AnimatePresence mode='wait'>{children}</AnimatePresence>
-
-          {/* Footer */}
-          <Footer className='' />
         </div>
+        {/* Footer */}
+        <Footer />
       </div>
     </AppearanceProvider>
   );

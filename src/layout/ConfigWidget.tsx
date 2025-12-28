@@ -33,7 +33,7 @@ export default function ConfigWidget({ className = '' }: { className?: string })
 
   return (
     <div
-      className={`fixed top-8 right-2 z-9999 flex flex-col items-end gap-3 sm:right-4 lg:right-8 ${className}`}
+      className={`fixed top-8 right-2 flex flex-col items-end gap-3 sm:right-4 lg:right-8 ${className}`}
     >
       <motion.button
         initial={{ scale: 0 }}

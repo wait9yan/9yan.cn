@@ -6,17 +6,20 @@
 @layer base {
   /* 北欧灰主题 */
   [data-theme='gray'] {
-    --bg-1: #fffefb; /* 背景色1 */
-    --bg-2: #f5f4f1; /* 背景色2 */
-    --bg-3: #cccbc8; /* 背景色3 */
-    --primary-1: #dae1e3; /* 主色1 */
-    --primary-2: #b2b7b9; /* 主色2 */
-    --primary-3: #595b5c; /* 主色3 */
+    --bg-1: #ffffff; /* 背景色1 */
+    --bg-2: #f5f5f7; /* 背景色2 */
+    --bg-3: #dedee5; /* 背景色3 */
+    --primary-1: #e5e8ec; /* 主色1 */
+    --primary-2: #ced4da; /* 主色2 */
+    --primary-3: #6c757d; /* 主色3 */
     --accent-1: #71c4ef; /* 主强调色 */
     --accent-2: #00668c; /* 次强调色 */
     --text-1: #1d1c1c; /* 主文字色 */
     --text-2: #313d44; /* 次文字色 */
+    --accent-1: #71c4ef; /* 主强调色 */
+    --accent-2: #ffffff; /* 次强调色 */
   }
+
   [data-theme='gray'].dark {
     --bg-1: #1a1f2b;
     --bg-2: #292e3b;
@@ -24,24 +27,24 @@
     --primary-1: #2c3a4f;
     --primary-2: #56647b;
     --primary-3: #b4c2dc;
-    --accent-1: #ff4d4d;
-    --accent-2: #ffecda;
     --text-1: #ffffff;
     --text-2: #e0e0e0;
+    --accent-1: #ff4d4d;
+    --accent-2: #ffffff;
   }
 
   /* 深海蓝主题 */
   [data-theme='blue'] {
-    --bg-1: #fffefb;
-    --bg-2: #f5f4f1;
-    --bg-3: #cccbc8;
-    --primary-1: #d4eaf7;
-    --primary-2: #b6ccd8;
+    --bg-1: #ffffff;
+    --bg-2: #eaf5fb;
+    --bg-3: #d4eaf7;
+    --primary-1: #c5dbe8;
+    --primary-2: #6796c9;
     --primary-3: #00668c;
-    --accent-1: #71c4ef;
-    --accent-2: #00668c;
     --text-1: #1d1c1c;
     --text-2: #003346;
+    --accent-1: #71c4ef;
+    --accent-2: #ffffff;
   }
   [data-theme='blue'].dark {
     --bg-1: #0f1c2e;
@@ -50,114 +53,126 @@
     --primary-1: #1f3a5f;
     --primary-2: #4d648d;
     --primary-3: #acc2ef;
-    --accent-1: #3d5a80;
-    --accent-2: #cee8ff;
     --text-1: #ffffff;
-    --text-2: #e0e0e0;
+    --text-2: #e9ebef;
+    --accent-1: #3d5a80;
+    --accent-2: #ffffff;
   }
 
   /* 暮山紫主题 */
   [data-theme='purple'] {
-    --bg-1: #ffffff;
-    --bg-2: #e6e6fa;
-    --bg-3: #d2d2f6;
-    --primary-1: #e1ddeb;
+    --bg-1: #fefdff;
+    --bg-2: #f4eeff;
+    --bg-3: #e1ddeb;
+    --primary-1: #d2d2f6;
     --primary-2: #c4bdd6;
     --primary-3: #6b5b95;
-    --accent-1: #ff7f11;
-    --accent-2: ##be5800;
     --text-1: #333333;
     --text-2: #424242;
+    --accent-1: #ff7f11;
+    --accent-2: #ffffff;
   }
   [data-theme='purple'].dark {
-    --bg-1: #241b35;
-    --bg-2: #342a45;
-    --bg-3: #4d425f;
-    --primary-1: #6c35de;
-    --primary-2: #a364ff;
-    --primary-3: #ffc7ff;
-    --accent-1: #cb80ff;
-    --accent-2: #373737;
+    --bg-1: #1e0f2e;
+    --bg-2: #2f1f3d;
+    --bg-3: #493757;
+    --primary-1: #3e1f5f;
+    --primary-2: #704d8d;
+    --primary-3: #d4acef;
     --text-1: #ffffff;
     --text-2: #e0e0e0;
-  }
-
-  /* 樱花粉主题 */
-  [data-theme='pink'] {
-    --bg-1: #ffffff;
-    --bg-2: #fceef5;
-    --bg-3: #fad9e6;
-    --primary-1: #f9ddeb;
-    --primary-2: #f3bad6;
-    --primary-3: #e05297;
-    --accent-1: #f5be0b;
-    --accent-2: #fef1c7;
-    --text-1: #292524;
-    --text-2: #78716c;
-  }
-  [data-theme='pink'].dark {
-    --bg-1: #393232;
-    --bg-2: #8d6262;
-    --bg-3: #4d4545;
-    --primary-1: #ed8d8d;
-    --primary-2: #cfb997;
-    --primary-3: #fdf6fd;
-    --accent-1: #6f8aa1;
-    --accent-2: #9eb2c2;
-    --text-1: #eeeeee;
-    --text-2: #fdebed;
+    --accent-1: #cb80ff;
+    --accent-2: #ffffff;
   }
 
   /* 朱砂红主题 */
   [data-theme='red'] {
-    --bg-1: #eeebdd;
-    --bg-2: #dfd3c3;
-    --bg-3: #c7b198;
-    --primary-1: #dfd3c3;
+    --bg-1: #ffffff;
+    --bg-2: #f7f4f0;
+    --bg-3: #dfd3c3;
+    --primary-1: #c7b198;
     --primary-2: #c89f93;
     --primary-3: #810000;
-    --accent-1: #788189;
-    --accent-2: #e1e4e6;
     --text-1: #1e2022;
     --text-2: #52616b;
+    --accent-1: #788189;
+    --accent-2: #ffffff;
   }
+  /* [data-theme='red'] {
+    --bg-1: #ffffff;
+    --bg-2: #f7f4f0;
+    --bg-3: #dfd3c3;
+    --primary-1: #c7b198;
+    --primary-2: #c89f93;
+    --primary-3: #810000;
+    --text-1: #1e2022;
+    --text-2: #52616b;
+    --accent-1: #788189;
+    --accent-2: #ffffff;
+  } */
   [data-theme='red'].dark {
-    --bg-1: #4c0000;
-    --bg-2: #5f1415;
-    --bg-3: #7d2f2b;
-    --primary-1: #ff5733;
-    --primary-2: #ff8a5f;
-    --primary-3: #fff3bf;
-    --accent-1: #ffc300;
-    --accent-2: #916600;
+    --bg-1: #2e0f16;
+    --bg-2: #3d1f25;
+    --bg-3: #57373c;
+    --primary-1: #5f1f2e;
+    --primary-2: #8d4d57;
+    --primary-3: #efacac;
     --text-1: #ffffff;
-    --text-2: #a4a4a4;
+    --text-2: #e0e0e0;
+    --accent-1: #ffc300;
+    --accent-2: #ffffff;
   }
 
-  /* 棕榈黄主题 */
+  /* 落栗褐主题 */
   [data-theme='brown'] {
-    --bg-1: #f5efe7;
+    --bg-1: #ffffff;
     --bg-2: #ebe5dd;
     --bg-3: #c2bdb5;
     --primary-1: #c7b299;
     --primary-2: #a9957d;
     --primary-3: #675640;
-    --accent-1: #a68b5b;
-    --accent-2: #483507;
     --text-1: #4d4d4d;
     --text-2: #797979;
+    --accent-1: #a68b5b;
+    --accent-2: #ffffff;
   }
   [data-theme='brown'].dark {
-    --bg-1: #3c2f2f;
-    --bg-2: #4d3f3f;
-    --bg-3: #675858;
-    --primary-1: #825b48;
-    --primary-2: #c79b86;
-    --primary-3: #e6b8a2;
-    --accent-1: #c96a4e;
-    --accent-2: #ffffdc;
+    --bg-1: #2b1e1a;
+    --bg-2: #3b2e29;
+    --bg-3: #544741;
+    --primary-1: #4f352c;
+    --primary-2: #7b6156;
+    --primary-3: #dcc2b4;
     --text-1: #ffffff;
     --text-2: #e0e0e0;
+    --accent-1: #c96a4e;
+    --accent-2: #ffffff;
+  }
+
+  /* 青松绿主题 */
+  [data-theme='green'] {
+    --bg-1: #ffffff;
+    --bg-2: #f6fcf7;
+    --bg-3: #ecf9ee;
+    --primary-1: #d8f3dc;
+    --primary-2: #b7e4c7;
+    --primary-3: #52b788;
+    --text-1: #1d1c1c;
+    --text-2: #003346;
+    --accent-1: #71c4ef;
+    --accent-2: #ffffff;
+  }
+  [data-theme='green'].dark {
+    --bg-1: #1a2b28;
+    --bg-2: #293b38;
+    --bg-3: #415452;
+    --primary-1: #2c4f49;
+    --primary-2: #567b76;
+    --primary-3: #b4dcd8;
+    --text-1: #ffffff;
+    --text-2: #e0e0e0;
+    --accent-1: #a68a64;
+    --accent-2: #ffffff;
   }
 }
 
@@ -168,10 +183,10 @@
   --color-primary-1: var(--primary-1);
   --color-primary-2: var(--primary-2);
   --color-primary-3: var(--primary-3);
-  --color-accent-1: var(--accent-1);
-  --color-accent-2: var(--accent-2);
   --color-text-1: var(--text-1);
   --color-text-2: var(--text-2);
+  --color-accent-1: var(--accent-1);
+  --color-accent-2: var(--accent-2);
 }
 
 /* 为页面内容添加淡入效果 */
@@ -185,10 +200,26 @@
 }
 
 @layer base {
+  /* 滚动条优化 */
+  html {
+    overflow-y: scroll;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-2) var(--bg-3);
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
   body > * {
     animation: fadeIn 0.2s ease-in;
   }
 
+  /* 文章样式 */
   .prose {
     --tw-prose-body: var(--text-1);
     --tw-prose-headings: var(--text-1);

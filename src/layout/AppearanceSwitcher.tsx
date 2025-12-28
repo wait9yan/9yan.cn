@@ -23,8 +23,8 @@ export default function AppearanceSwitcher() {
           onClick={() => setAppearance(t.value)}
           className={`group text-text-1 flex h-5 w-15 items-center justify-center rounded-md ${
             appearance === t.value
-              ? 'border-bg-3 ring-bg-3 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 bg-bg-3 border-2 ring-2 ring-offset-2'
-              : 'border-bg-3 hover:border-primary-2 border-2'
+              ? 'border-primary-1 ring-primary-1 hover:ring-primary-2 hover:border-primary-2 ring-offset-bg-2 bg-primary-1 border-2 ring-2 ring-offset-2'
+              : 'border-primary-1 hover:border-primary-2 border-2'
           }`}
           title={t.label}
           aria-label={`切换到${t.label}外观`}

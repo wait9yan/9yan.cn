@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { useSetAtom } from 'jotai';
+import clsx from 'clsx';
 import { isConfigButtonVisibleAtom } from '@/hooks/use-config';
 
 export default function Footer({ className }: { className?: string }) {
@@ -20,9 +21,9 @@ export default function Footer({ className }: { className?: string }) {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
-    timerRef.current = setTimeout(() => {
-      setConfigVisible(false);
-    }, 30000);
+    // timerRef.current = setTimeout(() => {
+    //   setConfigVisible(false);
+    // }, 30000);
 
     if (timeDiff < 400 && timeDiff > 0) {
       clickCountRef.current += 1;
@@ -45,10 +46,9 @@ export default function Footer({ className }: { className?: string }) {
       const scrollTop = window.scrollY;
       const scrollBottom = scrollTop + viewportHeight;
 
-      const isPageTallerThanViewport = docHeight > viewportHeight + 100;
-      const isNearBottom = scrollBottom >= docHeight - 100;
+      const isNearBottom = scrollBottom >= docHeight - 16;
 
-      if (!isPageTallerThanViewport || isNearBottom) {
+      if (isNearBottom) {
         setFooterState('bottom');
       } else {
         setFooterState('side');
@@ -75,40 +75,25 @@ export default function Footer({ className }: { className?: string }) {
   }, []);
 
   return (
-    <>
-      <AnimatePresence mode='wait'>
-        {footerState === 'bottom' && (
-          <motion.footer
-            key='bottom-footer'
-            onClick={handleFooterClick}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileTap={{ scale: 0.9 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className={`text-text-2 fixed bottom-4 left-1/2 -translate-x-1/2 cursor-pointer rounded-full px-6 py-2 text-sm backdrop-blur-sm transition-transform ${className}`}
-          >
-            <span className='select-none'>© 2025 wait9yan v{process.env.APP_VERSION}</span>
-          </motion.footer>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence mode='wait'>
-        {footerState === 'side' && (
-          <motion.div
-            key='side-footer'
-            onClick={handleFooterClick}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            whileTap={{ scale: 0.9 }}
-            exit={{ opacity: 0, x: 100 }}
-            transition={{ duration: 0.3 }}
-            className={`bg-bg-1 text-text-2 fixed right-4 bottom-4 z-50 cursor-pointer rounded-full px-4 py-2 text-sm shadow-lg backdrop-blur-sm transition-transform ${className}`}
-          >
-            <span className='select-none'>© wait9yan {process.env.APP_VERSION}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+    <motion.footer
+      layout
+      onClick={handleFooterClick}
+      whileTap={{ scale: 0.9 }}
+      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      className={clsx(
+        'text-text-2 fixed bottom-4 z-2 cursor-pointer rounded-full px-6 py-2 text-xs backdrop-blur-sm',
+        footerState === 'side' && 'right-4 bottom-4',
+        footerState === 'bottom' && 'left-1/2 -translate-x-1/2',
+        className,
+      )}
+    >
+      <motion.span
+        layout
+        className='select-none'
+        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+      >
+        © {footerState === 'side' ? 'wait9yan' : '2025 wait9yan'} v{process.env.APP_VERSION}
+      </motion.span>
+    </motion.footer>
   );
 }

@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'motion/react';
 import type { BlogListItem } from '@/lib/blog';
 
 type BlogCardProps = {
@@ -15,11 +14,7 @@ export function BlogCard({ blog }: BlogCardProps) {
 
   return (
     <Link href={`/blog/${encodeURIComponent(slug)}`}>
-      <motion.article
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className='bg-bg-2/50 group border-bg-3/50 hover:bg-bg-2 hover:border-bg-3 flex cursor-pointer overflow-hidden rounded-xl border transition-all'
-      >
+      <article className='bg-bg-2/50 group border-primary-2/50 hover:bg-bg-2 hover:border-primary-2 flex cursor-pointer overflow-hidden rounded-xl border transition-all'>
         <div className='p-2 sm:p-4 lg:p-6'>
           <h3 className='text-text-1 text-lg font-semibold transition-colors'>{title}</h3>
           <div className='text-text-3 mt-2 flex flex-wrap items-center gap-3 text-xs'>
@@ -54,7 +49,7 @@ export function BlogCard({ blog }: BlogCardProps) {
             />
           </div>
         )}
-      </motion.article>
+      </article>
     </Link>
   );
 }

@@ -128,10 +128,11 @@ const DelaunayBackground: React.FC<IProps> = ({
   const requestRef = useRef<number | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const colorCachingRef = useRef<{ [key: string]: string }>({});
+  const lastSizeRef = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
 
   // 监听主题变化以触发重新渲染
   const { actualAppearance } = useAppearance();
-  const { palette } = usePalette();
+  const { actualPalette } = usePalette();
 
   // 使用 state 强制重绘
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -140,9 +141,9 @@ const DelaunayBackground: React.FC<IProps> = ({
   const renderColorRef = useRef<string>(
     propColor ||
       (typeof window !== 'undefined'
-        ? window.getComputedStyle(document.documentElement).getPropertyValue('--primary-1').trim()
+        ? window.getComputedStyle(document.documentElement).getPropertyValue('--bg-3').trim()
         : '') ||
-      '#dae1e3', // gray 主题的 primary-1 作为默认值
+      '#dae1e3', // gray 主题的 bg-3 作为默认值
   );
 
   // 当主题变化时，在 DOM 更新后读取新颜色
@@ -153,8 +154,8 @@ const DelaunayBackground: React.FC<IProps> = ({
     const updateColor = () => {
       const newColor =
         propColor ||
-        window.getComputedStyle(document.documentElement).getPropertyValue('--primary-1').trim() ||
-        '#dae1e3'; // 使用 gray 主题的 primary-1 作为回退值
+        window.getComputedStyle(document.documentElement).getPropertyValue('--bg-3').trim() ||
+        '#dae1e3'; // 使用 gray 主题的 bg-3 作为回退值
 
       if (renderColorRef.current !== newColor) {
         renderColorRef.current = newColor;
@@ -166,7 +167,7 @@ const DelaunayBackground: React.FC<IProps> = ({
     // 使用 requestAnimationFrame 确保在浏览器重绘前更新
     const rafId = requestAnimationFrame(updateColor);
     return () => cancelAnimationFrame(rafId);
-  }, [propColor, actualAppearance, palette]);
+  }, [propColor, actualAppearance, actualPalette]);
 
   // --- 2. 粒子与绘图逻辑 (基本不变，除了使用 renderColorRef.current) ---
 
@@ -393,6 +394,7 @@ const DelaunayBackground: React.FC<IProps> = ({
     if (containerRef.current) {
       const { width, height } = getCanvasSize(containerRef.current);
       initParticles(width, height);
+      lastSizeRef.current = { width, height };
 
       const loop = () => {
         renderFrame();
@@ -407,6 +409,44 @@ const DelaunayBackground: React.FC<IProps> = ({
     };
   }, [initParticles, renderFrame, animate]);
 
+  // 监听窗口 resize 事件
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    let resizeTimer: NodeJS.Timeout | null = null;
+
+    const handleResize = () => {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
+
+      resizeTimer = setTimeout(() => {
+        if (containerRef.current) {
+          const { width, height } = getCanvasSize(containerRef.current);
+          const lastSize = lastSizeRef.current;
+
+          // 只在尺寸真正改变时才重新渲染（容差 1px）
+          if (Math.abs(width - lastSize.width) > 1 || Math.abs(height - lastSize.height) > 1) {
+            lastSizeRef.current = { width, height };
+            initParticles(width, height);
+            colorCachingRef.current = {};
+            renderFrame();
+          }
+        }
+      }, 200);
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      if (resizeTimer) {
+        clearTimeout(resizeTimer);
+      }
+      resizeObserver.disconnect();
+    };
+  }, [initParticles, renderFrame]);
+
   return (
     <div
       ref={containerRef}
@@ -417,7 +457,7 @@ const DelaunayBackground: React.FC<IProps> = ({
         height,
         border: borderColor ? `1px solid ${borderColor}` : undefined,
         overflow: 'hidden',
-        backgroundColor: propColor || 'var(--primary-1)',
+        backgroundColor: propColor || 'var(--bg-3)',
       }}
     >
       <canvas

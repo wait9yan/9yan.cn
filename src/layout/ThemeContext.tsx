@@ -1,9 +1,29 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, PropsWithChildren } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  PropsWithChildren,
+} from 'react';
 
 export type Appearance = 'light' | 'dark' | 'auto';
-export type Palette = 'gray' | 'blue' | 'purple' | 'pink' | 'red' | 'brown';
+export type Palette = 'gray' | 'blue' | 'purple' | 'red' | 'brown' | 'green' | 'random';
+
+export const actualPalettes: Exclude<Palette, 'random'>[] = [
+  'gray',
+  'blue',
+  'purple',
+  'red',
+  'brown',
+  'green',
+];
+
+function getRandomPalette(): Exclude<Palette, 'random'> {
+  return actualPalettes[Math.floor(Math.random() * actualPalettes.length)];
+}
 
 interface AppearanceContextType {
   appearance: Appearance;
@@ -14,6 +34,7 @@ interface AppearanceContextType {
 interface PaletteContextType {
   palette: Palette;
   setPalette: (palette: Palette) => void;
+  actualPalette: Exclude<Palette, 'random'>;
 }
 
 const AppearanceContext = createContext<AppearanceContextType | undefined>(undefined);
@@ -27,6 +48,7 @@ function getSystemAppearance(): 'light' | 'dark' {
 export function AppearanceProvider({ children }: PropsWithChildren) {
   const [appearance, setAppearanceState] = useState<Appearance>('light');
   const [palette, setPaletteState] = useState<Palette>('gray');
+  const [actualPalette, setActualPaletteState] = useState<Exclude<Palette, 'random'>>('gray');
   const [mounted, setMounted] = useState(false);
 
   const actualAppearance = appearance === 'auto' ? getSystemAppearance() : appearance;
@@ -40,23 +62,32 @@ export function AppearanceProvider({ children }: PropsWithChildren) {
     }
   }
 
-  const applyPalette = (newPalette: Palette) => {
+  const applyPaletteToDOM = (resolvedPalette: Exclude<Palette, 'random'>) => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', newPalette);
+    root.setAttribute('data-theme', resolvedPalette);
+  };
+
+  const resolvePalette = (newPalette: Palette): Exclude<Palette, 'random'> => {
+    return newPalette === 'random' ? getRandomPalette() : newPalette;
   };
 
   // 客户端挂载时初始化主题
   useEffect(() => {
     const init = () => {
       const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'auto';
-      const savedPalette = (localStorage.getItem('palette') as Palette) || 'gray';
+      const savedPalette =
+        (localStorage.getItem('palette') as Palette) ||
+        (document.documentElement.getAttribute('data-theme') as Palette) ||
+        'gray';
 
       setAppearanceState(savedAppearance);
       setPaletteState(savedPalette);
 
       const initAppearance = savedAppearance === 'auto' ? getSystemAppearance() : savedAppearance;
       applyAppearance(initAppearance);
-      applyPalette(savedPalette);
+      const resolvedInitPalette = resolvePalette(savedPalette);
+      applyPaletteToDOM(resolvedInitPalette);
+      setActualPaletteState(resolvedInitPalette);
 
       setMounted(true);
     };
@@ -83,10 +114,15 @@ export function AppearanceProvider({ children }: PropsWithChildren) {
   }, [actualAppearance, mounted]);
 
   // 色调变化时更新 DOM
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (mounted) {
-      applyPalette(palette);
+      const resolvedPalette = resolvePalette(palette);
+      applyPaletteToDOM(resolvedPalette);
+      if (resolvedPalette !== actualPalette) {
+        setActualPaletteState(resolvedPalette);
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [palette, mounted]);
 
   const setAppearance = (newAppearance: Appearance) => {
@@ -97,23 +133,23 @@ export function AppearanceProvider({ children }: PropsWithChildren) {
   const setPalette = (newPalette: Palette) => {
     setPaletteState(newPalette);
     localStorage.setItem('palette', newPalette);
+    const resolvedPalette = resolvePalette(newPalette);
+    setActualPaletteState(resolvedPalette);
   };
 
   return (
-    <>
-      <AppearanceContext.Provider value={{ appearance, setAppearance, actualAppearance }}>
-        <PaletteContext.Provider value={{ palette, setPalette }}>
-          {children}
-        </PaletteContext.Provider>
-      </AppearanceContext.Provider>
-    </>
+    <AppearanceContext.Provider value={{ appearance, setAppearance, actualAppearance }}>
+      <PaletteContext.Provider value={{ palette, setPalette, actualPalette }}>
+        {children}
+      </PaletteContext.Provider>
+    </AppearanceContext.Provider>
   );
 }
 
 export function useAppearance() {
   const context = useContext(AppearanceContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useAppearance must be used within a AppearanceProvider');
   }
   return context;
 }
@@ -121,7 +157,7 @@ export function useAppearance() {
 export function usePalette() {
   const context = useContext(PaletteContext);
   if (context === undefined) {
-    throw new Error('usePalette must be used within a PaletteProvider');
+    throw new Error('usePalette must be used within a AppearanceProvider');
   }
   return context;
 }

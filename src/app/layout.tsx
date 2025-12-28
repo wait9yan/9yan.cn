@@ -18,7 +18,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
       lang='zh-CN'
       data-theme='gray'
     >
-      <body className='bg-background text-foreground transition-colors duration-300'>
+      <body>
         <Layout>{children}</Layout>
       </body>
     </html>
