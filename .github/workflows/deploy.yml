@@ -24,7 +24,6 @@ jobs:
           git fetch origin public/blogs
           mkdir -p public/blogs
           git archive origin/public/blogs | tar -x -C public/blogs
-          rm -rf public/blogs/.*
           echo "✅ 文章内容已拉取"
 
       - uses: pnpm/action-setup@v2
@@ -43,8 +42,8 @@ jobs:
 
       - name: Package
         run: |
+          rm -rf public/blogs/.*
           cp -r public .next/standalone/ && cp -r .next/static .next/standalone/.next/
-          rm -rf .next/standalone/public/.*
           cp ecosystem.config.js scripts/server-deploy.sh .next/standalone/
           mkdir -p deploy_package
           cp -r .next/standalone/. deploy_package/
