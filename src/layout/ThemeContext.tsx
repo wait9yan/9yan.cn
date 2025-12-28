@@ -75,10 +75,7 @@ export function AppearanceProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const init = () => {
       const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'auto';
-      const savedPalette =
-        (localStorage.getItem('palette') as Palette) ||
-        (document.documentElement.getAttribute('data-theme') as Palette) ||
-        'gray';
+      const savedPalette = (localStorage.getItem('palette') as Palette) || 'random';
 
       setAppearanceState(savedAppearance);
       setPaletteState(savedPalette);
