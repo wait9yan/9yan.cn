@@ -88,7 +88,7 @@ export default function Footer({ className }: { className?: string }) {
       )}
     >
       {footerState === 'bottom' && (
-        <span className='flex gap-1'>
+        <span className='flex gap-1 whitespace-nowrap'>
           copyright © {new Date().getFullYear()}
           <a
             href='https://beian.miit.gov.cn/'
