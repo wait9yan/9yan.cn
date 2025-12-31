@@ -63,7 +63,7 @@ export default function Home() {
         <h2 className='text-text-1 mt-10 text-2xl font-bold'>
           九言<span className='text-xl'>@wait9yan</span>
         </h2>
-        <p className='text-text-2 mt-2 text-sm'>Hi 👋，我是一个软件开发工程师（2024～至今）</p>
+        <p className='text-text-2 mt-2 text-sm'>Hi 👋，我是一个软件开发工程师</p>
         <p className='text-text-2 text-sm'>我想，永远不要停止学习</p>
         <div className='mt-10 flex justify-center gap-2'>
           {linkList.map((item) => (
