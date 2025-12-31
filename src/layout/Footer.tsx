@@ -81,19 +81,27 @@ export default function Footer({ className }: { className?: string }) {
       whileTap={{ scale: 0.9 }}
       transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       className={clsx(
-        'text-text-2 fixed bottom-4 z-2 cursor-pointer rounded-full px-6 py-2 text-xs backdrop-blur-sm',
+        'text-text-2/50 fixed bottom-4 z-2 flex cursor-pointer items-center gap-1 rounded-full px-6 py-2 text-xs backdrop-blur-sm select-none',
         footerState === 'side' && 'right-4 bottom-4',
         footerState === 'bottom' && 'left-1/2 -translate-x-1/2',
         className,
       )}
     >
-      <motion.span
-        layout
-        className='select-none'
-        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-      >
-        © {footerState === 'side' ? 'wait9yan' : '2025 wait9yan'} v{process.env.APP_VERSION}
-      </motion.span>
+      {footerState === 'bottom' && (
+        <span className='flex gap-1'>
+          copyright © {new Date().getFullYear()}
+          <a
+            href='https://beian.miit.gov.cn/'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='hover:decoration-text-2/50 underline decoration-transparent underline-offset-4 transition-all duration-300 ease-out'
+          >
+            浙ICP备2025221186号-1
+          </a>
+          wait9yan
+        </span>
+      )}
+      <span>v{process.env.APP_VERSION}</span>
     </motion.footer>
   );
 }
