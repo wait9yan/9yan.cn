@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
 import { Icon } from '@iconify-icon/react';
+import Button from '@/components/Button';
 
 const linkList = [
   {
@@ -67,16 +68,13 @@ export default function Home() {
         <p className='text-text-2 text-sm'>我想，永远不要停止学习</p>
         <div className='mt-10 flex justify-center gap-2'>
           {linkList.map((item) => (
-            <motion.button
-              key={item.href}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.9 }}
+            <Button
+              key={item.label}
               onClick={() => window.open(item.href, '_blank')}
-              rel='noopener noreferrer'
-              className='bg-primary-3 text-bg-1 flex h-9 w-9 items-center justify-center rounded-full'
+              className='h-9 w-9'
             >
               {item.icon}
-            </motion.button>
+            </Button>
           ))}
         </div>
       </motion.div>

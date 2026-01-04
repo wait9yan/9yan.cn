@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { isConfigButtonVisibleAtom, isConfigPanelOpenAtom } from '@/hooks/use-config';
 import AppearanceSwitcher from '@/layout/AppearanceSwitcher';
 import PalettesSwitcher from '@/layout/PalettesSwitcher';
+import Button from '@/components/Button';
 
 export default function ConfigWidget({ className = '' }: { className?: string }) {
   const [isButtonVisible] = useAtom(isConfigButtonVisibleAtom);
@@ -35,19 +36,15 @@ export default function ConfigWidget({ className = '' }: { className?: string })
     <div
       className={`fixed top-8 right-2 flex flex-col items-end gap-3 sm:right-4 lg:right-8 ${className}`}
     >
-      <motion.button
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.9 }}
+      <Button
         onClick={() => setIsPanelOpen((prev) => !prev)}
         className={clsx(
-          'flex h-14 w-14 items-center justify-center rounded-full text-2xl shadow-lg transition-colors',
+          'h-14 w-14 text-2xl shadow-lg',
           isPanelOpen ? 'bg-bg-1 text-text-2' : 'bg-primary-3 text-bg-1',
         )}
       >
         {isPanelOpen ? <Icon icon='lucide:x' /> : <Icon icon='lucide:settings' />}
-      </motion.button>
+      </Button>
 
       <AnimatePresence>
         {isPanelOpen && (
