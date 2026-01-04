@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react';
 import { useMarkdownRender } from '@/hooks/use-markdown-render';
+import { CategoryTags } from './CategoryTags';
 
 type BlogPreviewProps = {
   markdown: string;
@@ -17,70 +18,44 @@ export function BlogPreview({ markdown, title, tags, date, slug }: BlogPreviewPr
   const basePath = slug ? `/blogs/${slug}` : undefined;
   const { content, toc, loading } = useMarkdownRender(markdown, basePath);
 
-  if (loading) {
-    return (
-      <div className='flex min-h-screen items-center justify-center'>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className='text-text-2 text-sm'
-        >
-          渲染中...
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <>
-      <motion.article
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className='bg-bg-1 overflow-hidden rounded-2xl shadow-lg'
-      >
-        <div className='p-6 sm:p-8 lg:p-10'>
-          <motion.header
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className='border-b-primary-1 border-b pb-8'
-          >
-            <h1 className='text-text-1 text-center text-3xl leading-tight font-bold max-sm:text-2xl'>
-              {title}
-            </h1>
+      <article>
+        <motion.h1
+          layoutId={`blog-title-${slug}`}
+          className='text-text-1 text-2xl leading-tight font-bold sm:text-3xl'
+        >
+          {title}
+        </motion.h1>
 
-            <div className='mt-6 flex flex-wrap items-center justify-center gap-4'>
-              <time className='text-text-2 text-sm'>{date}</time>
+        <motion.div
+          layoutId={`blog-meta-${slug}`}
+          className='mt-6 flex flex-wrap items-center gap-2 text-xs'
+        >
+          <time className='text-text-2 font-semibold'>{date}</time>
+          <CategoryTags categories={tags ?? []} />
+        </motion.div>
+        <div className='border-b-primary-1 mt-8 border-b'></div>
 
-              {tags.length > 0 && (
-                <>
-                  <span className='text-text-3'>·</span>
-                  <div className='flex flex-wrap items-center justify-center gap-2'>
-                    {tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className='text-text-2 bg-primary-1/50 hover:bg-primary-1 rounded-full px-3 py-1 text-xs font-medium transition-colors'
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </motion.header>
-
+        {loading ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            className='text-text-2 py-16 text-center text-sm'
+          >
+            渲染中...
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
             className='prose mx-auto mt-8 max-w-none'
           >
             {content}
           </motion.div>
-        </div>
-      </motion.article>
+        )}
+      </article>
 
       {toc.length > 0 && (
         <motion.aside
