@@ -32,7 +32,8 @@ const navList = [
 export default function Layout({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const isHome = pathname === '/';
-  const isBlog = pathname.startsWith('/blog');
+  const isBlogList = pathname === '/blog';
+  const isBlogDetail = pathname.startsWith('/blog/') && pathname !== '/blog';
   const isProject = pathname.startsWith('/projects');
   const isActive = (path: string) => pathname === path;
   return (
@@ -54,7 +55,8 @@ export default function Layout({ children }: PropsWithChildren) {
         className={clsx(
           'flex min-h-screen flex-col items-center px-2 transition-colors sm:px-4 lg:px-8',
           isHome && 'justify-center',
-          isBlog && 'justify-start',
+          isBlogList && 'justify-start',
+          isBlogDetail && 'justify-start',
           isProject && 'justify-start',
         )}
       >
@@ -62,9 +64,10 @@ export default function Layout({ children }: PropsWithChildren) {
           className={clsx(
             'flex w-full flex-col items-start pb-16',
             isHome && 'w-full max-w-sm',
-            isBlog && 'max-w-4xl',
+            isBlogList && 'max-w-4xl',
+            isBlogDetail && 'max-w-5xl',
             isProject && 'max-w-7xl',
-            !isHome && !isBlog && !isProject && 'max-w-4xl',
+            !isHome && !isBlogList && !isBlogDetail && !isProject && 'max-w-4xl',
           )}
         >
           {/* 导航栏 */}

@@ -2,7 +2,8 @@
 
 import { motion } from 'motion/react';
 import { useMarkdownRender } from '@/hooks/use-markdown-render';
-import { CategoryTags } from './CategoryTags';
+import { CategoryTags } from '@/components/CategoryTags';
+import PageLayout from '@/components/PageLayout';
 
 type BlogPreviewProps = {
   markdown: string;
@@ -19,8 +20,8 @@ export function BlogPreview({ markdown, title, tags, date, slug }: BlogPreviewPr
   const { content, toc, loading } = useMarkdownRender(markdown, basePath);
 
   return (
-    <>
-      <article>
+    <div className='flex gap-4'>
+      <PageLayout className='max-w-3xl'>
         <motion.h1
           layoutId={`blog-title-${slug}`}
           className='text-text-1 text-2xl leading-tight font-bold sm:text-3xl'
@@ -55,15 +56,10 @@ export function BlogPreview({ markdown, title, tags, date, slug }: BlogPreviewPr
             {content}
           </motion.div>
         )}
-      </article>
+      </PageLayout>
 
       {toc.length > 0 && (
-        <motion.aside
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
-          className='bg-bg-1 mt-8 rounded-2xl p-6 shadow-lg'
-        >
+        <PageLayout className='sticky top-4 hidden h-fit max-h-[calc(100vh-2rem)] grow overflow-y-auto lg:block lg:px-4 lg:py-4'>
           <h2 className='text-text-1 mb-4 text-lg font-semibold'>目录</h2>
           <nav className='space-y-2'>
             {toc.map((item, index) => (
@@ -77,8 +73,8 @@ export function BlogPreview({ markdown, title, tags, date, slug }: BlogPreviewPr
               </a>
             ))}
           </nav>
-        </motion.aside>
+        </PageLayout>
       )}
-    </>
+    </div>
   );
 }
