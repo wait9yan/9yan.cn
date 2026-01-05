@@ -11,7 +11,7 @@ categories:
 
 我简单实现了一个支持外观切换（亮色/暗色/自动）和色调切换的主题模块，在此分享实现时的思考与技术细节。
 
-![主题系统](assets/palette-switcher-20251228105221-djbwemg.png "主题系统")
+![主题系统](image1.png)
 
 ## 前期思考
 
@@ -35,7 +35,7 @@ categories:
 
 我不直接使用 `red`​ 或 `#FF0000`​，而是定义了 `bg`​（背景色）、`primary`​（主色）、`text`​（文字色）和 `accent`（强调色）。
 
-![主题配色表](assets/9yan-color-table-20260105111950-ru4gcl5.png "主题配色表")
+![主题配色表](image2.png)
 
 ## 技术实现
 
