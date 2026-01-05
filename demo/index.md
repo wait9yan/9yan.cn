@@ -9,6 +9,6 @@ categories:
 
 测试笔记内容
 
-![image](assets/image-20260105151656-5hwimot.png "image")
+![image](image1.png)
 
-![image](assets/image-20260105154729-qte5ow4.png "image")
+![image](image2.png)
