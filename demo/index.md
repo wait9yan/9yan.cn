@@ -1,5 +1,5 @@
 ---
-title: demo
+title: 测试
 date: 2026-01-05
 categories:
   - 技术
@@ -10,3 +10,5 @@ categories:
 测试笔记内容
 
 ![image](image1.png)
+
+![image](image2.png)
