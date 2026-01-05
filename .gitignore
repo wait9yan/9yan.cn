@@ -39,5 +39,8 @@ next-env.d.ts
 logs/
 *.log
 
-# blogs
-/public
+# public
+/public/blogs
+
+# editor
+.cursor
