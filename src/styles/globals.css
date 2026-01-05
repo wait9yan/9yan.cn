@@ -12,12 +12,10 @@
     --primary-1: #e5e8ec; /* 主色1 */
     --primary-2: #ced4da; /* 主色2 */
     --primary-3: #6c757d; /* 主色3 */
-    --accent-1: #71c4ef; /* 主强调色 */
-    --accent-2: #00668c; /* 次强调色 */
     --text-1: #27272a; /* 主文字色 */
     --text-2: #52525b; /* 次文字色 */
     --accent-1: #71c4ef; /* 主强调色 */
-    --accent-2: #ffffff; /* 次强调色 */
+    --accent-2: #00668c; /* 次强调色 */
   }
 
   [data-theme='gray'].dark {
