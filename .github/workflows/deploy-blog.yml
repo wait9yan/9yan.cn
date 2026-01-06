@@ -18,7 +18,8 @@ jobs:
       - name: Package blog content
         run: |
           rm -rf .git .github .gitignore .prettierrc
-          tar -czf blogs.tar.gz .
+          tar -czf /tmp/blogs.tar.gz .
+          mv /tmp/blogs.tar.gz .
           echo "📦 Blog size: $(du -h blogs.tar.gz | cut -f1)"
 
       - name: Upload
