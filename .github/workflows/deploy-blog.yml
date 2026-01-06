@@ -1,0 +1,47 @@
+name: Deploy Blog
+
+on:
+  push:
+    branches:
+      - 'public/blogs'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: public/blogs
+
+      - name: Package blog content
+        run: |
+          rm -rf .git .github .gitignore .prettierrc
+          tar -czf blogs.tar.gz .
+          echo "📦 Blog size: $(du -h blogs.tar.gz | cut -f1)"
+
+      - name: Upload
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: 'blogs.tar.gz'
+          target: ${{ secrets.DEPLOY_PATH }}/public
+
+      - name: Deploy blog content
+        uses: appleboy/ssh-action@v1.2.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}/public
+            rm -rf blogs
+            mkdir -p blogs
+            tar -xzf blogs.tar.gz -C blogs
+            rm blogs.tar.gz
+            echo "✅ Blog content deployed"
