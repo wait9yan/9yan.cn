@@ -98,7 +98,7 @@ export default function Footer({ className }: { className?: string }) {
             rel='noopener noreferrer'
             className='hover:decoration-text-2/50 whitespace-nowrap underline decoration-transparent underline-offset-4 transition-all duration-300 ease-out'
           >
-            浙ICP备2025221186号-1
+            浙ICP备2025221186号
           </a>
         </span>
       ) : (
