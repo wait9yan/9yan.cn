@@ -44,3 +44,6 @@ logs/
 
 # editor
 .cursor
+
+.playwright-mcp
+# playwright

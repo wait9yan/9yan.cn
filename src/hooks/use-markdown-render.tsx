@@ -24,13 +24,31 @@ export function useMarkdownRender(markdown: string, basePath?: string): Markdown
         const { html, toc } = await renderMarkdown(markdown);
         if (!cancelled) {
           // Extract pre elements and replace with placeholders before parsing
-          const codeBlocks: Array<{ placeholder: string; code: string; preHtml: string }> = [];
+          const codeBlocks: Array<{
+            placeholder: string;
+            code: string;
+            lang: string;
+            preHtml: string;
+          }> = [];
           const processedHtml = html.replace(
-            /<pre\s+data-code="([^"]*)"([^>]*)>([\s\S]*?)<\/pre>/g,
-            (match, codeAttr, attrs, content) => {
+            /<pre\b([^>]*)>[\s\S]*?<\/pre>/g,
+            (match, attrs) => {
+              const codeMatch = attrs.match(/\sdata-code="([^"]*)"/);
+              const langMatch = attrs.match(/\sdata-lang="([^"]*)"/);
+
+              if (!codeMatch || !langMatch) {
+                return match;
+              }
+
               const placeholder = `__CODE_BLOCK_${codeBlocks.length}__`;
               // Decode HTML entities in code attribute
-              const code = codeAttr
+              const code = codeMatch[1]
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&');
+              const lang = langMatch[1]
                 .replace(/&quot;/g, '"')
                 .replace(/&#39;/g, "'")
                 .replace(/&lt;/g, '<')
@@ -39,7 +57,8 @@ export function useMarkdownRender(markdown: string, basePath?: string): Markdown
               codeBlocks.push({
                 placeholder,
                 code,
-                preHtml: `${content}`,
+                lang,
+                preHtml: match,
               });
               return placeholder;
             },
@@ -83,6 +102,7 @@ export function useMarkdownRender(markdown: string, basePath?: string): Markdown
                             <CodeBlock
                               key={block.placeholder}
                               code={block.code}
+                              lang={block.lang}
                             >
                               {preElement}
                             </CodeBlock>
