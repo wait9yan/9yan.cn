@@ -6,9 +6,10 @@ import { Icon } from '@iconify-icon/react';
 type CodeBlockProps = {
   children: React.ReactNode;
   code: string;
+  lang?: string;
 };
 
-export function CodeBlock({ children, code }: CodeBlockProps) {
+export function CodeBlock({ children, code, lang }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -23,14 +24,17 @@ export function CodeBlock({ children, code }: CodeBlockProps) {
 
   return (
     <div className='code-block-wrapper'>
-      <button
-        type='button'
-        onClick={handleCopy}
-        className='code-block-copy-btn'
-        aria-label='Copy code'
-      >
-        {copied ? <Icon icon='lucide:check' /> : <Icon icon='lucide:copy' />}
-      </button>
+      <div className='bg-bg-3 text-text-2 flex items-center justify-between rounded-t-lg px-4 py-2 text-xs font-medium'>
+        <span>{lang || 'plain text'}</span>
+        <button
+          type='button'
+          onClick={handleCopy}
+          className='code-block-copy-btn'
+          aria-label='Copy code'
+        >
+          {copied ? <Icon icon='lucide:check' /> : <Icon icon='lucide:copy' />}
+        </button>
+      </div>
       {children}
     </div>
   );

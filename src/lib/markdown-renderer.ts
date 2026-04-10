@@ -1,4 +1,6 @@
 import { marked } from 'marked';
+import { codeToHtml, getSingletonHighlighter } from 'shiki';
+import type { BundledLanguage } from 'shiki';
 import type { Tokens } from 'marked';
 
 export type TocItem = { id: string; text: string; level: number };
@@ -8,12 +10,78 @@ export interface MarkdownRenderResult {
   toc: TocItem[];
 }
 
+const SHIKI_LIGHT_THEME = 'github-light';
+const SHIKI_DARK_THEME = 'github-dark';
+const FALLBACK_CODE_LANGUAGE = 'text';
+
+void getSingletonHighlighter({
+  themes: [SHIKI_LIGHT_THEME, SHIKI_DARK_THEME],
+});
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9\u4e00-\u9fa5\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-');
+}
+
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function normalizeCodeLanguage(lang?: string): string {
+  return lang?.trim().toLowerCase() || FALLBACK_CODE_LANGUAGE;
+}
+
+async function renderHighlightedCode(
+  code: string,
+  lang?: string,
+): Promise<{ html: string; lang: string }> {
+  const requestedLang = normalizeCodeLanguage(lang);
+
+  try {
+    const html = await codeToHtml(code, {
+      lang: requestedLang as BundledLanguage,
+      themes: {
+        light: SHIKI_LIGHT_THEME,
+        dark: SHIKI_DARK_THEME,
+      },
+    });
+
+    return {
+      html,
+      lang: requestedLang,
+    };
+  } catch {
+    const html = await codeToHtml(code, {
+      lang: FALLBACK_CODE_LANGUAGE,
+      themes: {
+        light: SHIKI_LIGHT_THEME,
+        dark: SHIKI_DARK_THEME,
+      },
+    });
+
+    return {
+      html,
+      lang: requestedLang,
+    };
+  }
+}
+
+function injectCodeBlockDataAttributes(html: string, code: string, lang: string): string {
+  const escapedCode = escapeHtmlAttribute(code);
+  const escapedLang = escapeHtmlAttribute(lang);
+
+  return html.replace(
+    /<pre([^>]*)>/,
+    `<pre$1 data-code="${escapedCode}" data-lang="${escapedLang}">`,
+  );
 }
 
 export async function renderMarkdown(markdown: string): Promise<MarkdownRenderResult> {
@@ -47,18 +115,25 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
   }
   extractHeadings(tokens);
 
-  const codeBlockMap = new Map<string, { html: string; original: string }>();
+  const codeBlockMap = new Map<string, string>();
+  let codeBlockIndex = 0;
 
-  for (const token of tokens) {
-    if (token.type === 'code') {
-      const codeToken = token as Tokens.Code;
-      const originalCode = codeToken.text;
-      const key = `__SHIKI_CODE_${codeBlockMap.size}__`;
+  await Promise.all(
+    tokens.map(async (token) => {
+      if (token.type !== 'code') return;
 
-      codeBlockMap.set(key, { html: '', original: originalCode });
-      codeToken.text = key;
-    }
-  }
+      const originalCode = token.text;
+      const key = `__SHIKI_CODE_${codeBlockIndex}__`;
+      codeBlockIndex += 1;
+      const highlighted = await renderHighlightedCode(originalCode, token.lang);
+
+      codeBlockMap.set(
+        key,
+        injectCodeBlockDataAttributes(highlighted.html, originalCode, highlighted.lang),
+      );
+      token.text = key;
+    }),
+  );
 
   const renderer = new marked.Renderer();
 
@@ -68,18 +143,9 @@ export async function renderMarkdown(markdown: string): Promise<MarkdownRenderRe
   };
 
   renderer.code = (token: Tokens.Code) => {
-    const codeData = codeBlockMap.get(token.text);
-    if (codeData) {
-      const escapedCode = codeData.original
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      if (codeData.html) {
-        return `<pre data-code="${escapedCode}">${codeData.html}</pre>`;
-      }
-      return `<pre data-code="${escapedCode}"><code>${codeData.original}</code></pre>`;
+    const codeHtml = codeBlockMap.get(token.text);
+    if (codeHtml) {
+      return codeHtml;
     }
     return `<code>${token.text}</code>`;
   };

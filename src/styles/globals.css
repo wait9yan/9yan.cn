@@ -280,6 +280,62 @@
     font-weight: 600;
   }
 
+  .code-block-wrapper {
+    margin: 1.5em 0;
+    overflow: hidden;
+    border: 1px solid var(--bg-3);
+    border-radius: 0.75rem;
+    background: var(--bg-2);
+  }
+
+  .code-block-wrapper > pre.shiki {
+    margin: 0;
+    overflow-x: auto;
+    border: 0;
+    border-radius: 0;
+    padding: 1.25em;
+  }                                                            
+
+  .code-block-wrapper > pre.shiki code {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.875em;
+    font-weight: 400;
+  }
+
+  html.dark .code-block-wrapper > pre.shiki,
+  html.dark .code-block-wrapper > pre.shiki span {
+    color: var(--shiki-dark) !important;
+  }
+
+  html.dark .code-block-wrapper > pre.shiki {
+    background-color: var(--bg-2) !important;
+  }
+
+  .code-block-copy-btn {
+    display: inline-flex;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    color: var(--text-2);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .code-block-copy-btn:hover {
+    background: var(--bg-1);
+    color: var(--text-1);
+  }
+
+  .code-block-copy-btn:focus-visible {
+    outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
+  }
+
   .prose pre {
     background: var(--bg-2);
     border-radius: 0.5rem;
